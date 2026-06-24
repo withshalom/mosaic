@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <!--
   MOSAIC IRON · Steel Design
-  KAD embedded workspace · KONSTRUCT aesthetic
+  KAD embedded workspace
   Principal: Shalom Marsjones
   530.802.6493 · mosaiciron@gmail.com
 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="copyright" content="KAD™ — Kernel-Aided Design. Copyright (C) 2024-2025 KADsuite / withshalom. Licensed under AGPL-3.0-or-later. KADsuite™, KAD™, KAM™, KUBE™, KARVE™, KONSTRUCT™, KULTIVATE™, KODE™, and KANVAS™ are trademarks of withshalom / KADsuite. Forks must remain open source under AGPL. Trademarks not licensed by AGPL.">
+<meta name="copyright" content="KAD™ — Kernel-Aided Design. Copyright (C) 2026 KADsuite / withshalom. Licensed under AGPL-3.0-or-later. KAD™ and KADsuite™ are trademarks of withshalom / KADsuite. Forks must remain open source under AGPL. Trademarks not licensed by AGPL.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MOSAIC IRON — Structural Steel Design & Drafting</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,40 +18,74 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap');
 
+
+/* ── LIGHT MODE ─────────────────────────────────────────────────────────────
+   Toggled via body.light-mode — all UI vars flip, accent stays cyan
+   ─────────────────────────────────────────────────────────────────────────── */
+body.light-mode {
+  --void:       #d0d8e0;
+  --panel:      #f0f4f8;
+  --panel2:     #e4eaf0;
+  --hover:      #d8e4ee;
+  --border:     #b0c4d8;
+  --border-hi:  #80a8c8;
+  --accent:     #0088aa;      /* darker cyan — readable on light */
+  --accent-dim: #006888;
+  --accent-glow: rgba(0,136,170,0.15);
+  --t1:  #0a1520;             /* near black */
+  --t2:  #2a4a6a;             /* dark blue-grey */
+  --t3:  #4a6a8a;             /* mid */
+}
+/* Icons: invert to dark cyan on light bg */
+body.light-mode .tool-icon svg {
+  stroke: #007a99;
+  color:  #007a99;
+}
+body.light-mode .tool-btn:hover .tool-icon svg {
+  stroke: #005577;
+  color:  #005577;
+}
+body.light-mode .tool-btn.active .tool-icon svg {
+  stroke: var(--accent);
+  color:  var(--accent);
+  filter: drop-shadow(0 0 3px var(--accent));
+}
+/* Canvas: light mode draws on a white/pale background */
+body.light-mode #main-canvas { background: #f8fbff; }
+
 :root {
-  --void:       #0c1824;
-  --panel:      #101c2e;
-  --panel2:     #162438;
-  --hover:      #1e3048;
-  --border:     rgba(74,143,212,0.22);
-  --border-hi:  rgba(74,143,212,0.42);
-  --accent:     #c07c30;
-  --accent-dim: rgba(192,124,48,0.55);
-  --accent-glow: rgba(192,124,48,0.15);
-  --green:      #4a8fd4;
-  --green-dim:  #2a6090;
+  --void:       #080a0e;
+  --panel:      #0b0f14;
+  --panel2:     #131a24;
+  --hover:      #1e2838;
+  --border:     #263548;
+  --border-hi:  #3a5070;
+  --accent:        #00d4ff;
+  --accent-dim:    #0088aa;
+  --accent-glow:   rgba(0,212,255,0.15);
+  --green:         #00ff9d;
+  --green-dim:     #00aa66;
   --amber:         #ffaa00;
   --red:           #ff4455;
-  --t1: #d0e8f8;
-  --t2: #7aA8c8;
-  --t3: #3a6080;
+  --t1:  #f0f4f8;
+  --t2: #a8c4dc;
+  --t3: #6888a8;
   --fm:     'Fira Code', monospace;
   --fd:       'Syne', sans-serif;
-  --sidebar-w:     228px;
-  --toolbar-h:     40px;
-  --status-h:      28px;
+  --sidebar-w:     272px;
+  --toolbar-h:     48px;
+  --status-h:      32px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { width:100%; height:100%; overflow:hidden; box-sizing:border-box; background:var(--void); color:var(--t1); font-family:var(--fd); font-size:13px; }
 
 /* ── LAYOUT ── */
-#app { display:grid; grid-template-columns:var(--sidebar-w) 1fr; grid-template-rows:var(--toolbar-h) 32px 1fr var(--status-h); width:100vw; height:100vh; overflow:hidden; }
+#app { display:grid; grid-template-columns:var(--sidebar-w) 1fr; grid-template-rows:var(--toolbar-h) 32px 1fr 28px var(--status-h); width:100vw; height:100vh; overflow:hidden; }
 
 /* ── TOPBAR ── */
 #topbar { grid-column:1/-1; display:flex; align-items:center; background:var(--panel); border-bottom:1px solid var(--border); padding:0 12px; position:relative; z-index:30; }
 .brand { display:flex; align-items:center; gap:8px; margin-right:20px; font-family:var(--fm); font-weight:700; font-size:14px; color:var(--accent); letter-spacing:0.04em; user-select:none; }
-.brand-dot { width:6px; height:6px; background:var(--accent); border-radius:50%; box-shadow:0 0 6px var(--accent); }
 .brand-sub { font-size:9px; color:var(--t3); letter-spacing:0.12em; text-transform:uppercase; font-weight:400; }
 .tb-menu { display:flex; align-items:center; }
 .tb-menu-item { padding:0 12px; height:var(--toolbar-h); display:flex; align-items:center; font-size:12px; color:var(--t2); cursor:pointer; transition:color 0.15s,background 0.15s; letter-spacing:0.02em; position:relative; }
@@ -59,7 +93,7 @@ html, body { width:100%; height:100%; overflow:hidden; box-sizing:border-box; ba
 .tb-menu-item.open { color:var(--t1); background:var(--hover); }
 .tb-sep { width:1px; height:18px; background:var(--border); margin:0 4px; }
 .tb-right { margin-left:auto; display:flex; align-items:center; gap:8px; }
-.tb-badge { font-family:var(--fm); font-size:10px; color:var(--t3); background:var(--panel2); border:1px solid var(--border); padding:2px 7px; border-radius:3px; letter-spacing:0.06em; }
+.tb-badge { font-family:var(--fm); font-size:11px; color:var(--t2); background:var(--panel2); border:1px solid var(--border); padding:2px 7px; border-radius:3px; letter-spacing:0.06em; }
 
 /* Topbar dropdown */
 .tb-dropdown { position:absolute; top:100%; left:0; background:var(--panel); border:1px solid var(--border-hi); border-radius:0 0 4px 4px; min-width:180px; z-index:200; display:none; flex-direction:column; box-shadow:0 8px 24px rgba(0,0,0,0.6); padding:4px 0; }
@@ -72,14 +106,16 @@ html, body { width:100%; height:100%; overflow:hidden; box-sizing:border-box; ba
 /* ── SIDEBAR ── */
 #sidebar { background:var(--panel); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; position:relative; z-index:10; height:100%; flex-shrink:0; }
 .section-head { padding:8px 14px 5px; font-family:var(--fm); font-size:9px; font-weight:500; color:var(--t3); letter-spacing:0.14em; text-transform:uppercase; border-bottom:1px solid var(--border); flex-shrink:0; }
-.tool-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; padding:6px; background:var(--border); border-bottom:1px solid var(--border); flex-shrink:0; }
-.tool-btn { background:var(--panel2); border:none; cursor:pointer; padding:8px 4px; display:flex; flex-direction:column; align-items:center; gap:3px; transition:background 0.15s,box-shadow 0.15s; position:relative; overflow:hidden; }
+.tool-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:2px; padding:8px; background:var(--border); border-bottom:1px solid var(--border); flex-shrink:0; }
+.tool-btn { background:var(--panel2); border:none; cursor:pointer; padding:12px 4px; display:flex; flex-direction:column; align-items:center; gap:5px; transition:background 0.15s,box-shadow 0.15s; position:relative; overflow:hidden; }
 .tool-btn:hover { background:var(--hover); }
 .tool-btn.active { background:var(--hover); box-shadow:inset 0 0 0 1px var(--accent); }
 .tool-btn.active::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--accent); box-shadow:0 0 8px var(--accent); }
-.tool-icon { width:22px; height:22px; display:flex; align-items:center; justify-content:center; }
-.tool-icon svg { width:16px; height:16px; }
-.tool-label { font-size:8px; font-family:var(--fm); color:var(--t2); letter-spacing:0.05em; }
+.tool-icon { width:28px; height:28px; display:flex; align-items:center; justify-content:center; }
+.tool-icon svg { width:20px; height:20px; stroke:#5de8ff; color:#5de8ff; }
+.tool-btn:hover .tool-icon svg { stroke:#b8f8ff; color:#b8f8ff; }
+.tool-btn.active .tool-icon svg { stroke:var(--accent); color:var(--accent); filter:drop-shadow(0 0 3px var(--accent)); }
+.tool-label { font-size:9px; font-family:var(--fm); color:var(--t1); letter-spacing:0.06em; opacity:0.9; }
 .tool-btn.active .tool-label { color:var(--accent); }
 
 /* Offset bar */
@@ -143,43 +179,117 @@ html, body { width:100%; height:100%; overflow:hidden; box-sizing:border-box; ba
 #hint span { color:var(--accent); }
 
 /* ── STATUS BAR ── */
-#statusbar { grid-column:1/-1; background:var(--panel); border-top:1px solid var(--border); display:flex; align-items:center; padding:0 12px; font-family:var(--fm); font-size:10px; color:var(--t3); letter-spacing:0.04em; overflow:hidden; }
-.sb-item { padding:0 10px; border-right:1px solid var(--border); height:100%; display:flex; align-items:center; gap:5px; flex-shrink:0; }
+/* ── KOMMAND LINE ─────────────────────────────────────────────────────────── */
+#kommand-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+  padding: 0;
+  overflow: hidden;
+  z-index: 30;
+}
+#kommand-context {
+  flex-shrink: 0;
+  padding: 0 10px;
+  font-family: var(--fm);
+  font-size: 9px;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-right: 1px solid var(--border);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  min-width: 80px;
+  white-space: nowrap;
+  user-select: none;
+}
+#kommand-echo {
+  flex-shrink: 0;
+  padding: 0 8px;
+  font-family: var(--fm);
+  font-size: 9px;
+  color: var(--t3);
+  letter-spacing: 0.04em;
+  border-right: 1px solid var(--border);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  min-width: 180px;
+  max-width: 280px;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+}
+#kommand-prefix {
+  flex-shrink: 0;
+  padding: 0 8px;
+  font-family: var(--fm);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--accent);
+  border-right: 1px solid var(--border);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  min-width: 40px;
+  user-select: none;
+}
+#kommand-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 10px;
+  font-family: var(--fm);
+  font-size: 11px;
+  color: var(--t1);
+  caret-color: var(--accent);
+  height: 100%;
+}
+#kommand-input::placeholder { color: var(--t3); font-size: 10px; }
+#kommand-hint {
+  flex-shrink: 0;
+  padding: 0 10px;
+  font-family: var(--fm);
+  font-size: 9px;
+  color: var(--t3);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+#kommand-hint b  { color: var(--accent); font-weight: 600; }
+#kommand-hint i  { color: var(--amber);  font-style: normal; }
+#kommand-hint em { color: var(--green);  font-style: normal; }
+
+#statusbar { grid-column:1/-1; background:var(--panel); border-top:1px solid var(--border); display:flex; align-items:center; padding:0 12px; font-family:var(--fm); font-size:10px; color:var(--t3); letter-spacing:0.04em; }
+.sb-item { padding:0 10px; border-right:1px solid var(--border); height:100%; display:flex; align-items:center; gap:5px; }
 .sb-item:first-child { padding-left:0; }
 .sb-val { color:var(--t2); }
 .sb-val.ok  { color:var(--green); }
 .sb-val.act { color:var(--accent); }
 .sb-val.warn { color:var(--amber); }
-.sb-right { margin-left:auto; display:flex; align-items:center; flex-shrink:0; overflow:hidden; }
-/* Scrolling marquee wrapper for the shortcut list on narrow screens */
-.sb-scroll-wrap { overflow:hidden; flex:1; min-width:0; position:relative; }
-.sb-scroll-inner { display:flex; align-items:center; white-space:nowrap; }
-/* Only animate when viewport is narrow (set via JS class) */
-.sb-scroll-inner.marquee { animation: sbScroll 22s linear infinite; }
-@keyframes sbScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
+.sb-right { margin-left:auto; display:flex; align-items:center; }
 .sb-cc {
   display: flex; align-items: center; gap: 5px;
   padding: 0 12px; border-left: 1px solid var(--border);
   font-family: var(--fm); font-size: 9px; color: var(--t3);
-  letter-spacing: 0.04em; white-space: nowrap; flex-shrink:0;
+  letter-spacing: 0.04em; white-space: nowrap;
 }
 .cc-link {
   color: var(--accent-dim); text-decoration: none;
   transition: color 0.15s;
 }
 .cc-link:hover { color: var(--accent); text-decoration: underline; }
-/* Dupe items: hidden by default, shown when marquee is active */
-.sb-dupe { display: none; }
 
 /* ── TOAST ── */
 #toast { position:fixed; bottom:46px; left:50%; transform:translateX(-50%) translateY(10px); background:var(--panel2); border:1px solid var(--border-hi); border-radius:4px; padding:6px 14px; font-size:11px; font-family:var(--fm); color:var(--t1); pointer-events:none; opacity:0; transition:opacity 0.18s,transform 0.18s; z-index:999; }
 #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
 /* ── DYNAMIC INPUT ── */
-#dyn-input-wrap { position:absolute; display:none; z-index:80; pointer-events:auto; }
+#dyn-input-wrap { display:none !important; pointer-events:none; }
 #dyn-input-box { background:var(--panel); border:1px solid var(--accent); border-radius:3px; box-shadow:0 0 12px rgba(0,212,255,0.3),0 2px 8px rgba(0,0,0,0.7); display:flex; align-items:center; min-width:170px; overflow:hidden; }
 #dyn-input-prefix { background:var(--panel2); border-right:1px solid var(--border); padding:5px 7px; font-family:var(--fm); font-size:9px; color:var(--accent); letter-spacing:0.05em; white-space:nowrap; flex-shrink:0; min-width:42px; text-align:center; }
 #dyn-input-field { background:transparent; border:none; outline:none; padding:5px 8px; font-family:var(--fm); font-size:11px; color:var(--t1); width:130px; caret-color:var(--accent); }
@@ -233,6 +343,35 @@ html, body { width:100%; height:100%; overflow:hidden; box-sizing:border-box; ba
 #prop-angle-row.visible { display:flex; }
 
 /* ── UNIT TOGGLE ── */
+#theme-toggle {
+  background: var(--panel2);
+  border: 1px solid var(--border-hi);
+  border-radius: 4px;
+  color: var(--t1);
+  height: 28px;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 10px 0 8px;
+  transition: all 0.15s;
+  font-family: var(--fm);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+#theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+#theme-toggle .t-icon {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+#theme-toggle .t-label {
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
 #unit-toggle {
   font-family: var(--fm);
   font-size: 10px;
@@ -388,10 +527,6 @@ html, body { width:100%; height:100%; overflow:hidden; box-sizing:border-box; ba
   display: flex; align-items: center; gap: 10px;
   font-size: 22px; font-weight: 700; color: var(--accent);
   letter-spacing: 0.06em; margin-bottom: 6px;
-}
-.splash-brand-dot {
-  width: 10px; height: 10px; background: var(--accent);
-  border-radius: 50%; box-shadow: 0 0 10px var(--accent);
 }
 .splash-sub {
   font-size: 10px; color: var(--t3);
@@ -724,10 +859,23 @@ body.kanvas-mode { --accent: #0090a8; --accent-dim: #006888; --accent-glow: rgba
 #unit-seg-mm.active { background: var(--accent); color: var(--void); font-weight:700; }
 #unit-seg-in.active { background: #ffaa00; color: #060e08; font-weight:700; }
 
+/* ── Return to KADsuite ───────────────────────────────────────────── */
+#btn-return-kadsuite {
+  display:flex; align-items:center; gap:6px; padding:4px 12px;
+  background:none; border:1px solid rgba(0,212,255,0.4); border-radius:3px;
+  color:#00d4ff; font-family:var(--fm,'Fira Code',monospace); font-size:9px;
+  letter-spacing:0.14em; text-transform:uppercase; cursor:pointer;
+  transition:all .2s; text-decoration:none; flex-shrink:0; white-space:nowrap;
+  margin-right:4px;
+}
+#btn-return-kadsuite:hover {
+  background:rgba(0,212,255,0.08); border-color:#00d4ff;
+}
 
-/* ═══ MOSAIC IRON SITE LAYER — KONSTRUCT AESTHETIC ══════════════════════ */
+
+/* ═══ MOSAIC IRON SITE LAYER ════════════════════════════════════════════ */
 :root {
-  /* Mosaic Iron brand tokens — mapped to KONSTRUCT blueprint palette      */
+  /* Mosaic Iron brand tokens — blueprint palette                          */
   --mi-void:    #0c1824;
   --mi-navy:    #101c2e;
   --mi-panel:   #162438;
@@ -758,14 +906,6 @@ body { overflow: hidden; }  /* overridden below via #site-scroll */
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   transition: opacity 0.35s;
-  /* thin blueprint grid overlay */
-  background-image:
-    linear-gradient(var(--mi-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--mi-grid) 1px, transparent 1px),
-    linear-gradient(var(--mi-grid-maj) 1px, transparent 1px),
-    linear-gradient(90deg, var(--mi-grid-maj) 1px, transparent 1px);
-  background-size: 24px 24px, 24px 24px, 120px 120px, 120px 120px;
-  background-position: -1px -1px;
   background-color: transparent;
 }
 
@@ -1335,11 +1475,11 @@ footer {
 }
 
 /* KADsuite banner — full-width, prominent */
-.foot-kerf-banner {
+.foot-kadsuite-banner {
   border-top: 1px solid var(--mi-border);
   margin: 0 -60px;  /* bleed to footer edges */
 }
-.kerf-banner-link {
+.kadsuite-banner-link {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1350,7 +1490,7 @@ footer {
   position: relative;
   overflow: hidden;
 }
-.kerf-banner-link::before {
+.kadsuite-banner-link::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -1359,21 +1499,21 @@ footer {
   opacity: 0.4;
   transition: opacity .25s;
 }
-.kerf-banner-link:hover { background: var(--mi-hover); }
-.kerf-banner-link:hover::before { opacity: 0.9; }
-.kerf-banner-inner {
+.kadsuite-banner-link:hover { background: var(--mi-hover); }
+.kadsuite-banner-link:hover::before { opacity: 0.9; }
+.kadsuite-banner-inner {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-.kerf-banner-label {
+.kadsuite-banner-label {
   font-family: 'Fira Code', monospace;
   font-size: 9px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--mi-t3);
 }
-.kerf-banner-name {
+.kadsuite-banner-name {
   font-family: 'Syne', sans-serif;
   font-weight: 800;
   font-size: clamp(22px, 4vw, 36px);
@@ -1382,8 +1522,8 @@ footer {
   line-height: 1;
   transition: color .25s;
 }
-.kerf-banner-link:hover .kerf-banner-name { color: var(--mi-t1); }
-.kerf-banner-sub {
+.kadsuite-banner-link:hover .kadsuite-banner-name { color: var(--mi-t1); }
+.kadsuite-banner-sub {
   font-family: 'Fira Code', monospace;
   font-size: 10px;
   color: var(--mi-t3);
@@ -1393,14 +1533,14 @@ footer {
   word-break: break-word;
   overflow-wrap: break-word;
 }
-.kerf-banner-arrow {
+.kadsuite-banner-arrow {
   width: 32px;
   height: 32px;
   color: var(--mi-t3);
   flex-shrink: 0;
   transition: color .25s, transform .25s;
 }
-.kerf-banner-link:hover .kerf-banner-arrow {
+.kadsuite-banner-link:hover .kadsuite-banner-arrow {
   color: var(--mi-blue);
   transform: translate(3px, -3px);
 }
@@ -1509,11 +1649,11 @@ footer {
   footer { padding: 20px 20px 0; }
   .foot-brand { font-size: 11px; }
   .foot-copy { font-size: 8px; padding-bottom: 20px; }
-  .foot-kerf-banner { margin: 0 -20px; }
-  .kerf-banner-link { padding: 20px 20px; }
-  .kerf-banner-name { font-size: clamp(20px, 7vw, 28px); }
-  .kerf-banner-sub { font-size: 8.5px; letter-spacing: 0.07em; line-height: 1.7; }
-  .kerf-banner-arrow { width: 22px; height: 22px; }
+  .foot-kadsuite-banner { margin: 0 -20px; }
+  .kadsuite-banner-link { padding: 20px 20px; }
+  .kadsuite-banner-name { font-size: clamp(20px, 7vw, 28px); }
+  .kadsuite-banner-sub { font-size: 8.5px; letter-spacing: 0.07em; line-height: 1.7; }
+  .kadsuite-banner-arrow { width: 22px; height: 22px; }
 
   /* Status bar on mobile: hide overflow items, let marquee handle it */
   .sb-cc { display: none; }
@@ -1547,20 +1687,20 @@ footer {
   footer { padding: 20px 16px 0; }
   .foot-brand { font-size: 10px; letter-spacing: 0.16em; }
   .foot-copy  { font-size: 7.5px; line-height: 1.7; padding-bottom: 16px; }
-  .foot-kerf-banner { margin: 0 -16px; }
+  .foot-kadsuite-banner { margin: 0 -16px; }
 
   /* Banner: stack label+name+sub vertically, arrow below or hidden */
-  .kerf-banner-link {
+  .kadsuite-banner-link {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
     padding: 20px 16px;
   }
-  .kerf-banner-inner { gap: 6px; width: 100%; }
-  .kerf-banner-name  { font-size: clamp(28px, 10vw, 40px); }
+  .kadsuite-banner-inner { gap: 6px; width: 100%; }
+  .kadsuite-banner-name  { font-size: clamp(28px, 10vw, 40px); }
 
   /* Sub: wrap onto multiple lines, use smaller separator */
-  .kerf-banner-sub {
+  .kadsuite-banner-sub {
     font-size: 8px;
     letter-spacing: 0.06em;
     line-height: 1.9;
@@ -1570,7 +1710,7 @@ footer {
   }
 
   /* Arrow: move inline, right-aligned, smaller */
-  .kerf-banner-arrow {
+  .kadsuite-banner-arrow {
     width: 18px;
     height: 18px;
     align-self: flex-end;
@@ -1578,23 +1718,26 @@ footer {
 }
 
 @media (max-width: 380px) {
-  .kerf-banner-name { font-size: clamp(24px, 10vw, 34px); }
-  .kerf-banner-sub  { font-size: 7.5px; }
+  .kadsuite-banner-name { font-size: clamp(24px, 10vw, 34px); }
+  .kadsuite-banner-sub  { font-size: 7.5px; }
   .about-head       { font-size: clamp(16px, 7.5vw, 28px); letter-spacing: -0.03em; }
   .contact-head     { font-size: clamp(16px, 7.5vw, 28px); letter-spacing: -0.03em; }
 }
+
 </style>
+
 </head>
 
 <body>
 
+
 <!-- ═══ KAD DRAFTING APP — lives behind the site ════════════════════════ -->
-<body>
+
 <div id="app">
 
 <!-- TOPBAR -->
 <div id="topbar">
-  <div class="brand"><div class="brand-dot"></div><span>.KAD</span><div class="brand-sub" id="brand-sub">Kernel-Aided Design</div></div>
+  <div class="brand"><span>KAD</span><div class="brand-sub" id="brand-sub">Kernel-Aided Design</div></div>
   <div class="tb-sep"></div>
   <div class="tb-menu">
     <div class="tb-menu-item" id="menu-file" onmouseenter="openMenu('file')" onmouseleave="scheduleClose()">File
@@ -1610,6 +1753,10 @@ footer {
     </div>
     <div class="tb-menu-item" id="menu-edit" onmouseenter="openMenu('edit')" onmouseleave="scheduleClose()">Edit
       <div class="tb-dropdown" id="dd-edit" onmouseenter="cancelClose()" onmouseleave="scheduleClose()">
+        <div class="tb-dd-item" onclick="copySelected();closeMenus()">Copy<span class="dd-key">Ctrl+C</span></div>
+        <div class="tb-dd-item" onclick="pasteSelected();closeMenus()">Paste<span class="dd-key">Ctrl+V</span></div>
+        <div class="tb-dd-item" onclick="copySelected();_pasteCount=0;pasteSelected();closeMenus()">Duplicate<span class="dd-key">Ctrl+D</span></div>
+        <div class="tb-dd-sep"></div>
         <div class="tb-dd-item" onclick="deleteSelected();closeMenus()">Delete Selected<span class="dd-key">Del</span></div>
         <div class="tb-dd-item" onclick="GeoMemory.clear();render();showToast('KANVAS cleared');closeMenus()">Clear All<span class="dd-key"></span></div>
         <div class="tb-dd-sep"></div>
@@ -1653,7 +1800,8 @@ footer {
         <div class="tb-dd-sep"></div>
         <div class="tb-dd-item" onclick="setTool('offset');closeMenus()">Offset<span class="dd-key">O</span></div>
         <div class="tb-dd-item" onclick="setTool('mirror');closeMenus()">Mirror<span class="dd-key">M</span></div>
-        <div class="tb-dd-item" onclick="setTool('measure');closeMenus()">Measure<span class="dd-key">D</span></div>
+        <div class="tb-dd-item" onclick="setTool('dim');closeMenus()">Dimension<span class="dd-key">D</span></div>
+        <div class="tb-dd-item" onclick="setTool('measure');closeMenus()">Measure Distance</div>
       </div>
     </div>
     <div class="tb-menu-item" id="menu-tools" onmouseenter="openMenu('tools')" onmouseleave="scheduleClose()">Tools
@@ -1661,7 +1809,8 @@ footer {
         <div class="tb-dd-item" onclick="zoomExtents();closeMenus()">Zoom Extents<span class="dd-key">Z</span></div>
         <div class="tb-dd-item" onclick="setTool('offset');closeMenus()">Offset Tool<span class="dd-key">O</span></div>
         <div class="tb-dd-item" onclick="setTool('mirror');closeMenus()">Mirror Tool<span class="dd-key">M</span></div>
-        <div class="tb-dd-item" onclick="setTool('measure');closeMenus()">Measure Tool<span class="dd-key">D</span></div>
+        <div class="tb-dd-item" onclick="setTool('dim');closeMenus()">Dimension Tool<span class="dd-key">D</span></div>
+        <div class="tb-dd-item" onclick="setTool('measure');closeMenus()">Measure Distance</div>
         <div class="tb-dd-sep"></div>
         <div class="tb-dd-item" onclick="showCoordHelp();closeMenus()">Coordinate Help<span class="dd-key">?</span></div>
       </div>
@@ -1669,12 +1818,20 @@ footer {
   </div>
   <div class="tb-right">
     <span class="tb-badge">v0.0</span>
+    <button id="theme-toggle" onclick="toggleTheme()" title="Toggle dark / light mode">
+      <span class="t-icon" id="theme-icon-dark">☾</span>
+      <span class="t-icon" id="theme-icon-light" style="display:none;">☀</span>
+      <span class="t-label" id="theme-label">DARK</span>
+    </button>
     <button id="unit-toggle" onclick="toggleUnits()" title="Toggle mm / inches (U)">
       <span class="unit-seg active" id="unit-seg-mm">mm</span>
       <span class="unit-divider"></span>
       <span class="unit-seg" id="unit-seg-in">in</span>
     </button>
   </div>
+  <div style="flex:1;"></div>
+  <a href="https://kadsuite.com" id="btn-return-kadsuite">← Return to KADsuite</a>
+
 </div>
 
 
@@ -1693,6 +1850,16 @@ footer {
 
 <!-- SIDEBAR -->
 <div id="sidebar">
+  <!-- ── LAYERS ────────────────────────────────────────────────────── -->
+  <div id="layer-panel">
+    <div class="section-head" style="display:flex;align-items:center;justify-content:space-between;padding-right:8px;">
+      <span>LAYERS</span>
+      <span id="active-layer-indicator" style="color:var(--accent);font-size:8px;">SOLID</span>
+    </div>
+    <div id="layer-list"></div>
+    <button class="layer-add-btn" onclick="addCustomLayer()">+ New Layer</button>
+  </div>
+
   <div class="section-head">Draw Tools</div>
   <div class="tool-grid">
     <button class="tool-btn active" id="btn-select" onclick="setTool('select')">
@@ -1743,9 +1910,37 @@ footer {
       <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="3" x2="12" y2="21" stroke-dasharray="2 2"/><polyline points="3,7 9,12 3,17"/><polyline points="21,7 15,12 21,17"/></svg></div>
       <span class="tool-label">MIRROR</span>
     </button>
-    <button class="tool-btn" id="btn-measure" onclick="setTool('measure')">
-      <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="9" x2="4" y2="15"/><line x1="20" y1="9" x2="20" y2="15"/><line x1="12" y1="10" x2="12" y2="14"/></svg></div>
-      <span class="tool-label">MEASURE</span>
+    <button class="tool-btn" id="btn-dim" onclick="setTool('dim')">
+      <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="17" x2="21" y2="17"/><line x1="3" y1="14" x2="3" y2="20"/><line x1="21" y1="14" x2="21" y2="20"/><line x1="8" y1="12" x2="8" y2="17"/><line x1="16" y1="12" x2="16" y2="17"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="10" y1="5" x2="8" y2="7"/><line x1="10" y1="9" x2="8" y2="7"/><line x1="14" y1="5" x2="16" y2="7"/><line x1="14" y1="9" x2="16" y2="7"/></svg></div>
+      <span class="tool-label">DIM</span>
+    </button>
+    <button class="tool-btn" id="btn-trim" onclick="setTool('trim')">
+      <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="12" x2="20" y2="12"/><line x1="12" y1="4" x2="12" y2="10"/><line x1="12" y1="14" x2="12" y2="20" stroke-dasharray="2 2" opacity="0.4"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg></div>
+      <span class="tool-label">TRIM</span>
+    </button>
+    <button class="tool-btn" id="btn-extend" onclick="setTool('extend')">
+      <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="12" x2="16" y2="12"/><polyline points="13,9 16,12 13,15"/><line x1="19" y1="5" x2="19" y2="19"/></svg></div>
+      <span class="tool-label">EXTEND</span>
+    </button>
+    <button class="tool-btn" id="btn-break" onclick="setTool('break')">
+      <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="20" y2="12"/><line x1="9" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="15" y2="15"/></svg></div>
+      <span class="tool-label">BREAK</span>
+    </button>
+    <button class="tool-btn" id="btn-scale" onclick="setTool('scale')">
+      <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/><line x1="11" y1="7" x2="13" y2="7" stroke-dasharray="2 2"/><line x1="17" y1="11" x2="17" y2="13" stroke-dasharray="2 2"/></svg></div>
+      <span class="tool-label">SCALE</span>
+    </button>
+    <button class="tool-btn" id="btn-stretch" onclick="setTool('stretch')">
+      <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="20" x2="12" y2="12"/><line x1="12" y1="12" x2="20" y2="4"/><circle cx="20" cy="4" r="2.5" fill="currentColor"/><path d="M17 1l3 3-3 3" stroke-width="1.2"/></svg></div>
+      <span class="tool-label">STRETCH</span>
+    </button>
+    <button class="tool-btn" id="btn-text" onclick="setTool('text')">
+      <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7V5h16v2"/><line x1="12" y1="5" x2="12" y2="19"/><line x1="8" y1="19" x2="16" y2="19"/></svg></div>
+      <span class="tool-label">TEXT</span>
+    </button>
+    <button class="tool-btn" id="btn-array" onclick="openArrayDialog()">
+      <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="5" height="5"/><rect x="10" y="3" width="5" height="5"/><rect x="17" y="3" width="4" height="5"/><rect x="3" y="10" width="5" height="5"/><rect x="10" y="10" width="5" height="5"/><rect x="17" y="10" width="4" height="5"/></svg></div>
+      <span class="tool-label">ARRAY</span>
     </button>
   </div>
 
@@ -2054,50 +2249,48 @@ footer {
 </div>
 
 <!-- STATUS BAR -->
+<!-- ═══ KOMMAND LINE ════════════════════════════════════════════════════════ -->
+<div id="kommand-bar">
+  <div id="kommand-context">SELECT</div>
+  <div id="kommand-label" style="flex-shrink:0;padding:0 8px;font-family:var(--fm);font-size:9px;font-weight:700;color:var(--accent);letter-spacing:0.14em;border-right:1px solid var(--border);height:100%;display:flex;align-items:center;">KOMMAND</div>
+  <div id="kommand-echo">ready</div>
+  <div id="kommand-prefix">≫</div>
+  <input id="kommand-input" type="text" spellcheck="false" autocomplete="off"
+    placeholder="K → type: L line · 10,25 · @50,0 · @100&lt;45° · COPY · PASTE"
+    tabindex="1"/>
+  <div id="kommand-hint">
+    <b>X,Y</b> abs &nbsp;·&nbsp;
+    <i>@dX,dY</i> rel &nbsp;·&nbsp;
+    <em>@D&lt;A°</em> polar &nbsp;·&nbsp;
+    <b>L</b>ine <b>A</b>rc <b>C</b>ircle <b>R</b>ect <b>O</b>ffset <b>M</b>irror <b>D</b>im <b>UNDO</b> <b>REDO</b>
+  </div>
+</div>
+
 <div id="statusbar">
   <div class="sb-item"><span>MODE</span><span class="sb-val act" id="sb-mode">SELECT</span></div>
   <div class="sb-item"><span>SNAP</span><span class="sb-val ok" id="sb-snap">ON</span></div>
   <div class="sb-item"><span>GRID</span><span class="sb-val" id="sb-grid">10mm</span></div>
-  <div class="sb-scroll-wrap">
-    <div class="sb-scroll-inner" id="sb-scroll-inner">
-      <div class="sb-item"><span>L</span><span class="sb-val">line</span></div>
-      <div class="sb-item"><span>A</span><span class="sb-val">arc</span></div>
-      <div class="sb-item"><span>C</span><span class="sb-val">circle</span></div>
-      <div class="sb-item"><span>F</span><span class="sb-val">fillet</span></div>
-      <div class="sb-item"><span>R</span><span class="sb-val">rect</span></div>
-      <div class="sb-item"><span>P</span><span class="sb-val">poly</span></div>
-      <div class="sb-item"><span>O</span><span class="sb-val">offset</span></div>
-      <div class="sb-item"><span>T</span><span class="sb-val">rotate</span></div>
-      <div class="sb-item"><span>Q/E</span><span class="sb-val">±90°</span></div>
-      <div class="sb-item"><span>Z</span><span class="sb-val">extents</span></div>
-      <div class="sb-item"><span>J</span><span class="sb-val">join</span></div>
-      <div class="sb-item"><span>X</span><span class="sb-val">explode</span></div>
-      <div class="sb-item"><span>U</span><span class="sb-val">units</span></div>
-      <div class="sb-item"><span>M</span><span class="sb-val">mirror</span></div>
-      <div class="sb-item"><span>D</span><span class="sb-val">measure</span></div>
-      <div class="sb-item"><span class="sb-val ok">.KAD v0.0</span></div>
-      <!-- duplicate set for seamless loop -->
-      <div class="sb-item sb-dupe"><span>L</span><span class="sb-val">line</span></div>
-      <div class="sb-item sb-dupe"><span>A</span><span class="sb-val">arc</span></div>
-      <div class="sb-item sb-dupe"><span>C</span><span class="sb-val">circle</span></div>
-      <div class="sb-item sb-dupe"><span>F</span><span class="sb-val">fillet</span></div>
-      <div class="sb-item sb-dupe"><span>R</span><span class="sb-val">rect</span></div>
-      <div class="sb-item sb-dupe"><span>P</span><span class="sb-val">poly</span></div>
-      <div class="sb-item sb-dupe"><span>O</span><span class="sb-val">offset</span></div>
-      <div class="sb-item sb-dupe"><span>T</span><span class="sb-val">rotate</span></div>
-      <div class="sb-item sb-dupe"><span>Q/E</span><span class="sb-val">±90°</span></div>
-      <div class="sb-item sb-dupe"><span>Z</span><span class="sb-val">extents</span></div>
-      <div class="sb-item sb-dupe"><span>J</span><span class="sb-val">join</span></div>
-      <div class="sb-item sb-dupe"><span>X</span><span class="sb-val">explode</span></div>
-      <div class="sb-item sb-dupe"><span>U</span><span class="sb-val">units</span></div>
-      <div class="sb-item sb-dupe"><span>M</span><span class="sb-val">mirror</span></div>
-      <div class="sb-item sb-dupe"><span>D</span><span class="sb-val">measure</span></div>
-      <div class="sb-item sb-dupe"><span class="sb-val ok">.KAD v0.0</span></div>
+  <div class="sb-right">
+    <div class="sb-item"><span>L</span><span class="sb-val">line</span></div>
+    <div class="sb-item"><span>A</span><span class="sb-val">arc</span></div>
+    <div class="sb-item"><span>C</span><span class="sb-val">circle</span></div>
+    <div class="sb-item"><span>F</span><span class="sb-val">fillet</span></div>
+    <div class="sb-item"><span>R</span><span class="sb-val">rect</span></div>
+    <div class="sb-item"><span>P</span><span class="sb-val">poly</span></div>
+    <div class="sb-item"><span>O</span><span class="sb-val">offset</span></div>
+    <div class="sb-item"><span>T</span><span class="sb-val">rotate</span></div>
+    <div class="sb-item"><span>Q/E</span><span class="sb-val">±90°</span></div>
+    <div class="sb-item"><span>Z</span><span class="sb-val">extents</span></div>
+    <div class="sb-item"><span>J</span><span class="sb-val">join</span></div>
+    <div class="sb-item"><span>X</span><span class="sb-val">explode</span></div>
+    <div class="sb-item"><span>U</span><span class="sb-val">units</span></div>
+    <div class="sb-item"><span>M</span><span class="sb-val">mirror</span></div>
+    <div class="sb-item"><span>D</span><span class="sb-val">measure</span></div>
+    <div class="sb-item"><span class="sb-val ok">KAD v0.0</span></div>
+    <div class="sb-cc">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" style="flex-shrink:0;opacity:0.7"><circle cx="12" cy="12" r="9"/><path d="M10 9.5A2.5 2.5 0 0 0 7.5 12a2.5 2.5 0 0 0 2.5 2.5"/><path d="M16 9.5A2.5 2.5 0 0 0 13.5 12a2.5 2.5 0 0 0 2.5 2.5"/></svg>
+      <span>© <span id="cc-year"></span> KADsuite™ · KAD Kernel-Aided Design · AGPL-3.0 · <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener" class="cc-link">Source on GitHub</a> · withshalom</span>
     </div>
-  </div>
-  <div class="sb-cc">
-    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" style="flex-shrink:0;opacity:0.7"><circle cx="12" cy="12" r="9"/><path d="M10 9.5A2.5 2.5 0 0 0 7.5 12a2.5 2.5 0 0 0 2.5 2.5"/><path d="M16 9.5A2.5 2.5 0 0 0 13.5 12a2.5 2.5 0 0 0 2.5 2.5"/></svg>
-    <span>© <span id="cc-year"></span> KADsuite™ · .KAD™ Kernel-Aided Design · <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener" class="cc-link">AGPL-3.0</a> · KADsuite™ trademarks of withshalom / KADsuite · <a href="https://withshalom.github.io/KAD" target="_blank" rel="noopener" class="cc-link">withshalom.github.io/KAD</a></span>
   </div>
 </div>
 
@@ -2203,39 +2396,7 @@ footer {
 </div>
 
 <!-- STARTUP UNIT SPLASH -->
-<div id="splash-overlay" onclick="event.stopPropagation()" style="display:none!important;pointer-events:none;">
-  <div id="splash-dialog">
-    <div class="dlg-head">
-      <div class="splash-brand"><div class="splash-brand-dot"></div>.KAD</div>
-      <div class="splash-sub">Kernel-Aided Design · v0.0</div>
-    </div>
-    <div class="dlg-body">
-      <div class="splash-prompt">
-        <strong>Choose your working units.</strong><br>
-        All coordinates, inputs, and dimensions will use this unit.<br>
-        You can switch at any time with the <span style="color:var(--accent)">mm·in</span> toggle in the toolbar.
-      </div>
-      <div class="splash-unit-grid">
-        <button class="splash-unit-btn mm-btn" onclick="splashSelectUnit('mm')">
-          <span class="sub-unit">mm</span>
-          <span class="sub-name">Millimeters</span>
-          <span class="sub-example">ISO · Metric · International</span>
-        </button>
-        <button class="splash-unit-btn in-btn" onclick="splashSelectUnit('in')">
-          <span class="sub-unit">in</span>
-          <span class="sub-name">Inches</span>
-          <span class="sub-example">Imperial · US Customary</span>
-        </button>
-      </div>
-      <div class="splash-note">
-        This preference is saved locally and won't appear again.<br>
-        AGPL-3.0 · Open source · KADsuite™ trademarks of withshalom / KADsuite<br>
-        Forks must remain open source under AGPL · Trademarks not licensed by AGPL<br>
-        © <span id="splash-year"></span> KADsuite™ · .KAD™ Kernel-Aided Design
-      </div>
-    </div>
-  </div>
-</div>
+<!-- splash suppressed — units default to inches (imperial), matching KADsuite -->
 
 <!-- OFFSET DISTANCE POPUP -->
 <div id="offset-popup-overlay">
@@ -2298,7 +2459,6 @@ footer {
     </div>
   </div>
 </div>
-
 
 
 <!-- KAD Escape Bar -->
@@ -2448,14 +2608,14 @@ footer {
 <footer>
   <div class="foot-brand">MOSAIC IRON</div>
   <div class="foot-copy">© 2025 Mosaic Iron · Architectural Steel Drafting &amp; Detailing · California</div>
-  <div class="foot-kerf-banner">
-    <a href="https://withshalom.github.io/KAD" target="_blank" rel="noopener" class="kerf-banner-link">
-      <div class="kerf-banner-inner">
-        <div class="kerf-banner-label">Powered by</div>
-        <div class="kerf-banner-name">KERF<sup style="font-size:0.38em;vertical-align:super;line-height:0;letter-spacing:0.02em;">suite™</sup></div>
-        <div class="kerf-banner-sub">KAD™ · KAM™ · KUBE™ · KARVE™ · KONSTRUCT™ · KULTIVATE™ · KODE™ · KANVAS™ · AGPL-3.0 · Open source</div>
+  <div class="foot-kadsuite-banner">
+    <a href="https://kadsuite.com" target="_blank" rel="noopener" class="kadsuite-banner-link">
+      <div class="kadsuite-banner-inner">
+        <div class="kadsuite-banner-label">Powered by</div>
+        <div class="kadsuite-banner-name">KAD<sup style="font-size:0.38em;vertical-align:super;line-height:0;letter-spacing:0.02em;">suite™</sup></div>
+        <div class="kadsuite-banner-sub">KAD™ · KAM™ · KUBIC™ · KARVE™ · KONSTRUCT™ · KULTIVATE™ · KODE™ · KANVAS™ · AGPL-3.0 · Open source</div>
       </div>
-      <svg class="kerf-banner-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+      <svg class="kadsuite-banner-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
     </a>
   </div>
 </footer>
@@ -2530,9 +2690,10 @@ document.addEventListener('keydown', function(e) {
 
 <!-- ─── KAD CORE JS ──────────────────────────────────────────────────── -->
 <script>
+
 'use strict';
 // ═══════════════════════════════════════════════════════════
-//  .KAD v0.0  — Kernel-Aided Design + OpenSCAD Export
+//  KAD v0.0  — Kernel-Aided Design
 // ═══════════════════════════════════════════════════════════
 
 // ── CANVAS ──────────────────────────────────────────────
@@ -2637,17 +2798,11 @@ function splashSelectUnit(unit) {
 }
 
 function initSplash() {
-  document.getElementById('splash-year').textContent = new Date().getFullYear();
-  let saved = null;
-  try { saved = localStorage.getItem(SPLASH_KEY); } catch(e){}
-  if (saved === 'mm' || saved === 'in') {
-    document.getElementById('splash-overlay').style.display = 'none';
-    canvas.style.pointerEvents = 'auto';
-    if (saved !== unitMode) splashSelectUnit(saved);
-  } else {
-    // Block canvas until unit chosen
-    canvas.style.pointerEvents = 'none';
-  }
+  // No unit splash — default to inches (imperial), matching KADsuite
+  unitMode = 'in';
+  document.getElementById('unit-seg-in').classList.add('active');
+  document.getElementById('unit-seg-mm').classList.remove('active');
+  updateGridLabel();
 }
 
 function toggleUnits() {
@@ -2793,6 +2948,7 @@ const GeoMemory = {
   },
   addCircle(cx,cy,r,layer='Layer_0'){const o={id:this.nextId++,type:'CIRCLE',layer,cx:parseFloat(cx.toFixed(6)),cy:parseFloat(cy.toFixed(6)),r:parseFloat(r.toFixed(6))};this.objects.push(o);updateProps();return o;},
   addArc(cx,cy,r,startA,endA,ccw=true,layer='Layer_0'){const o={id:this.nextId++,type:'ARC',layer,cx:parseFloat(cx.toFixed(6)),cy:parseFloat(cy.toFixed(6)),r:parseFloat(r.toFixed(6)),startA:parseFloat(startA.toFixed(8)),endA:parseFloat(endA.toFixed(8)),ccw};this.objects.push(o);updateProps();return o;},
+  addText(x,y,text,height=5,layer='Layer_0'){const o={id:this.nextId++,type:'TEXT',layer,x,y,text,height};this.objects.push(o);updateProps();return o;},
   remove(id) {
     this.objects = this.objects.filter(o=>o.id!==id); updateProps();
   },
@@ -3024,24 +3180,25 @@ function commitDynInput() {
 
 function parseDynCoord(str) {
   str=str.trim();
-  const base = lineState.active ? {x:lineState.x1,y:lineState.y1} : {x:0,y:0};
-  // base is in mm; for relative/polar inputs, the delta is typed in display units
+  const relBase = lineState.active ? {x:lineState.x1,y:lineState.y1} : {x:0,y:0};
 
-  // @dist<angle  polar — dist is in display units
+  // @dist<angle  polar relative — from last point
   let m = str.match(/^@([+\-]?[\d.eE]+)<([+\-]?[\d.eE]+)$/);
   if(m){
     const d=fromDisplay(parseFloat(m[1])), a=parseFloat(m[2])*Math.PI/180;
     if(isNaN(d)||isNaN(a)) return null;
-    return { x:parseFloat((base.x+d*Math.cos(a)).toFixed(6)), y:parseFloat((base.y+d*Math.sin(a)).toFixed(6)) };
+    return { x:parseFloat((relBase.x+d*Math.cos(a)).toFixed(6)),
+             y:parseFloat((relBase.y+d*Math.sin(a)).toFixed(6)) };
   }
-  // @dx,dy  relative — deltas in display units
+  // @dx,dy  relative — from last point
   m = str.match(/^@([+\-]?[\d.eE]+)[, ]([+\-]?[\d.eE]+)$/);
   if(m){
     const dx=fromDisplay(parseFloat(m[1])), dy=fromDisplay(parseFloat(m[2]));
     if(isNaN(dx)||isNaN(dy)) return null;
-    return { x:parseFloat((base.x+dx).toFixed(6)), y:parseFloat((base.y+dy).toFixed(6)) };
+    return { x:parseFloat((relBase.x+dx).toFixed(6)),
+             y:parseFloat((relBase.y+dy).toFixed(6)) };
   }
-  // x,y  absolute — coordinates in display units
+  // x,y  absolute — always from world origin (0,0)
   m = str.match(/^([+\-]?[\d.eE]+)[, ]([+\-]?[\d.eE]+)$/);
   if(m){
     const x=fromDisplay(parseFloat(m[1])), y=fromDisplay(parseFloat(m[2]));
@@ -3189,7 +3346,7 @@ function commitLineChain(closed) {
   }
   if(lineChain.length === 2 && !closed) {
     // Two points = one line segment — store as LINE for simplicity
-    GeoMemory.addLine(lineChain[0].x, lineChain[0].y, lineChain[1].x, lineChain[1].y);
+    GeoMemory.addLine(lineChain[0].x, lineChain[0].y, lineChain[1].x, lineChain[1].y, activeLayer||'Layer_0');
     showToast('Line segment committed');
   } else {
     GeoMemory.addPolyline([...lineChain], closed);
@@ -3673,6 +3830,7 @@ function drawRotatePreview() {
 // ── TOOL MANAGEMENT ─────────────────────────────────────
 function cancelTool() {
   lineState   = {active:false};
+  if(typeof dimState!=='undefined') dimState={active:false,p1:null};
   lineChain   = [];
   rectState   = {active:false};
   polyState   = {active:false};
@@ -3682,6 +3840,10 @@ function cancelTool() {
   filletState = {active:false,firstLine:null};
   rotateState = {phase:0,pivotX:0,pivotY:0,pivotSet:false,draggingPivot:false,startAngle:0,previewDelta:0};
   selBox      = {active:false, pending:false, startSX:0, startSY:0, startWX:0, startWY:0};
+  if(typeof trimHoverSeg  !== 'undefined') trimHoverSeg  = null;
+  if(typeof extendPreview !== 'undefined') extendPreview = null;
+  if(typeof breakState    !== 'undefined') breakState    = {active:false,obj:null,pt1:null};
+  if(typeof stretchState  !== 'undefined') stretchState  = {active:false,endpt:null,obj:null,which:null};
   document.getElementById('rect-preview').style.display='none';
 }
 
@@ -3699,7 +3861,7 @@ function setTool(tool) {
   activeTool = tool;
 
   document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
-  const btnMap={select:'btn-select',line:'btn-line',rect:'btn-rect',polygon:'btn-polygon',offset:'btn-offset',rotate:'btn-rotate',circle:'btn-circle',arc:'btn-arc',fillet:'btn-fillet',mirror:'btn-mirror',measure:'btn-measure'};
+  const btnMap={select:'btn-select',line:'btn-line',rect:'btn-rect',polygon:'btn-polygon',offset:'btn-offset',rotate:'btn-rotate',circle:'btn-circle',arc:'btn-arc',fillet:'btn-fillet',chamfer:'btn-chamfer',mirror:'btn-mirror',dim:'btn-dim',trim:'btn-trim',extend:'btn-extend',break:'btn-break',scale:'btn-scale',stretch:'btn-stretch',text:'btn-text'};
   if(btnMap[tool]) document.getElementById(btnMap[tool]).classList.add('active');
 
   document.getElementById('sb-mode').textContent=tool.toUpperCase();
@@ -3711,6 +3873,7 @@ function setTool(tool) {
   document.getElementById('mirror-bar').style.display  = tool==='mirror'?'flex':'none';
   document.getElementById('measure-bar').style.display = tool==='measure'?'flex':'none';
   if (tool !== 'measure') { measureState = {active:false,p1:null}; }
+  if (tool !== 'dim' && typeof dimState !== 'undefined') { dimState = {active:false,p1:null}; }
   // Rotate bar — show when rotate tool OR when something is selected
   const rotateBar = document.getElementById('rotate-bar');
   if (tool === 'rotate') rotateBar.classList.add('visible');
@@ -4035,12 +4198,48 @@ function onMouseDown(e) {
       render();return;
     }
 
+    if(activeTool==='trim')    { applyTrim();            return; }
+    if(activeTool==='extend')  { applyExtend();          return; }
+    if(activeTool==='break')   { applyBreak(wp.x,wp.y); return; }
+    if(activeTool==='text')    { placeTextAt(wp.x,wp.y); return; }
+    if(activeTool==='stretch'&&stretchState.endpt){ stretchState.active=true; return; }
+    if(activeTool==='scale'||activeTool==='array'){ return; } // handled by dialog
+    if(activeTool==='dim') {
+      if(!dimState.active) {
+        dimState = {active:true, p1:{x:wp.x,y:wp.y}};
+        kecho('DIM: click second point', 'dim');
+      } else {
+        drawDimension(dimState.p1, wp, true);
+        dimState = {active:false, p1:wp}; // chain dims from last point
+      }
+      return;
+    }
     if(activeTool==='fillet') {
       const hit=pickLine(mouseScreen.x,mouseScreen.y);
       if(!hit){showToast('Click closer to a line');return;}
-      if(!filletState.firstLine){filletState={active:true,firstLine:hit};showToast('First line selected — click second line');}
-      else{if(hit.id===filletState.firstLine.id){showToast('Click a different line');return;}commitFillet(filletState.firstLine,hit);filletState={active:false,firstLine:null};}
-      render();return;
+      if(!filletState.firstLine){
+        filletState={active:true,firstLine:hit};
+        showToast('Fillet: first line selected — click second line');
+      } else {
+        if(hit.id===filletState.firstLine.id){showToast('Click a different line');return;}
+        commitFillet(filletState.firstLine,hit);
+        filletState={active:false,firstLine:null};
+      }
+      render(); return;
+    }
+
+    if(activeTool==='chamfer') {
+      const hit=pickLine(mouseScreen.x,mouseScreen.y);
+      if(!hit){showToast('Click closer to a line');return;}
+      if(!chamferState.line1){
+        chamferState={active:true,line1:hit.id,line2:null};
+        showToast('Chamfer: first line selected — click second line');
+      } else {
+        if(hit.id===chamferState.line1){showToast('Click a different line');return;}
+        commitChamfer(chamferState.line1, hit.id);
+        chamferState={active:false,line1:null,line2:null};
+      }
+      render(); return;
     }
 
     if(activeTool==='rotate') {
@@ -4187,11 +4386,20 @@ function onMouseMove(e) {
     document.getElementById('rect-preview').style.display='none';
   }
 
+  if(activeTool==='trim')    updateTrimHover(mouseWorld.x,mouseWorld.y);
+  if(activeTool==='extend')  updateExtendHover(mouseWorld.x,mouseWorld.y);
+  if(activeTool==='stretch') updateStretchHover(mouseWorld.x,mouseWorld.y);
+  if(activeTool==='stretch'&&stretchState.active&&stretchState.obj) applyStretch(mouseWorld.x,mouseWorld.y);
   if(dynVisible) positionDynInput();
   render();
+  if(typeof drawNewToolPreviews==='function') drawNewToolPreviews();
 }
 
 function onMouseUp(e) {
+  if(activeTool==='stretch' && stretchState.active) {
+    stretchState.active=false;
+    render(); return;
+  }
   if(isPanning){ isPanning=false; updateCursor(); }
 
   // Release pivot drag
@@ -4264,6 +4472,7 @@ window.addEventListener('keydown', onKeyDown);
 function onKeyDown(e) {
   if(document.activeElement===dynField) return;
   if(document.activeElement.tagName==='INPUT') return;
+  if(document.activeElement===kInput) return; // KOMMAND has focus
 
   const k=e.key;
   if(k==='Escape'){
@@ -4275,7 +4484,12 @@ function onKeyDown(e) {
   }
   if(k==='Enter'){
     if(activeTool==='line'&&lineState.active){
-      commitLineChain(false); // open polyline (or single line)
+      if(lineChain.length>=2){
+        commitLineChain(false);
+      } else {
+        cancelTool();
+      }
+      render(); return;
     }
     if(activeTool==='rect'&&rectState.active){
       const wp=snapActive&&snapPoint?snapPoint:mouseWorld;
@@ -4305,11 +4519,16 @@ function onKeyDown(e) {
     if(k==='o'||k==='O') setTool('offset');
     if(k==='t'||k==='T') setTool('rotate');
     if(k==='m'||k==='M') setTool('mirror');
-    if(k==='d'||k==='D') setTool('measure');
+    if(k==='d'||k==='D') setTool('dim');
     if(k==='j'||k==='J') joinSelected();
     if(k==='x'||k==='X') explodeSelected();
-    if(k==='q'||k==='Q') rotateSelected(-90);  // CCW
-    if(k==='e'||k==='E') rotateSelected(90);   // CW
+    if(k==='q'||k==='Q') setTool('trim');      // Q = quick trim
+    if(k==='e'||k==='E') setTool('extend');    // E = extend
+    if(k==='b'||k==='B') setTool('break');     // B = break
+    if(k==='k'||k==='K') setTool('text');      // K = text (T taken by rotate)
+    if(k==='n'||k==='N') openArrayDialog();    // N = array
+    if(k==='<'||k===',') rotateSelected(-90);  // < = rotate CCW
+    if(k==='>'||k==='.') rotateSelected(90);   // > = rotate CW
     if(k==='0')          flattenSelection();
     if(k==='z'||k==='Z') zoomExtents();
     if(k==='g'||k==='G') toggleGrid();
@@ -4317,11 +4536,16 @@ function onKeyDown(e) {
     if(k==='u'||k==='U') toggleUnits();
     if(k==='?')          showCoordHelp();
   }
-  if(e.ctrlKey){
+  if(e.ctrlKey||e.metaKey){
     if(k==='s'){ e.preventDefault(); saveKAD(); }
     if(k==='n'){ e.preventDefault(); newDocument(); }
     if(k==='e' && e.shiftKey){ e.preventDefault(); exportSCAD(); }
     else if(k==='e'){ e.preventDefault(); exportDXF(); }
+    if(k==='c'){ e.preventDefault(); copySelected(); }
+    if(k==='v'){ e.preventDefault(); pasteSelected(); }
+    if(k==='d'){ e.preventDefault(); copySelected(); _pasteCount=0; pasteSelected(); }
+    if(k==='z'){ e.preventDefault(); if(typeof undo==='function') undo(); }
+    if(k==='y'){ e.preventDefault(); if(typeof redo==='function') redo(); }
   }
 }
 
@@ -4352,7 +4576,14 @@ document.addEventListener('mousedown', e=>{
 function ctxCancelCommit() {
   closeCtxMenu();
   if(activeTool==='line'&&lineState.active){
-    lineState={active:false}; render(); return;
+    // Right-click "Commit Line" — commit whatever chain exists
+    if(lineChain.length>=2){
+      commitLineChain(false); // open polyline
+    } else {
+      lineState={active:false};
+      lineChain=[];
+    }
+    render(); return;
   }
   cancelTool(); render();
 }
@@ -4416,11 +4647,476 @@ function updateGridLabel() {
 }
 
 // ── RENDER ──────────────────────────────────────────────
-const C={
-  bg:'#080a0e', grid:'#141c28', gridMaj:'#1c2535', axis:'#1e3348',
-  entity:'#00d4ff', entitySel:'#ffaa00', point:'#ffaa00',
-  rubberLine:'#00d4ff', startPt:'#00ff9d',
+// C is a live getter — returns correct colors for current theme
+const C = new Proxy({}, {
+  get(_, key) {
+    const light = document.body.classList.contains('light-mode');
+    const dark = {
+      bg:'#080a0e', grid:'#1a2840', gridMaj:'#253a58', axis:'#2a5080',
+      entity:'#00d4ff', entitySel:'#ffaa00', point:'#ffaa00',
+      rubberLine:'#00d4ff', startPt:'#00ff9d',
+    };
+    const lt = {
+      bg:'#f8fbff', grid:'#d0dde8', gridMaj:'#b8ccd8', axis:'#a0b8cc',
+      entity:'#0077aa', entitySel:'#cc6600', point:'#cc6600',
+      rubberLine:'#0077aa', startPt:'#007755',
+    };
+    return (light ? lt : dark)[key];
+  }
+});
+
+
+// ════════════════════════════════════════════════════════════════════════════
+//  NEW TOOLS: TRIM · EXTEND · BREAK · SCALE · STRETCH · TEXT · ARRAY
+// ════════════════════════════════════════════════════════════════════════════
+
+function lineLineIntersect(ax1,ay1,ax2,ay2,bx1,by1,bx2,by2){
+  const dx1=ax2-ax1,dy1=ay2-ay1,dx2=bx2-bx1,dy2=by2-by1;
+  const d=dx1*dy2-dy1*dx2; if(Math.abs(d)<1e-12)return null;
+  const t1=((bx1-ax1)*dy2-(by1-ay1)*dx2)/d;
+  const t2=((bx1-ax1)*dy1-(by1-ay1)*dx1)/d;
+  return{x:ax1+t1*dx1,y:ay1+t1*dy1,t1,t2};
+}
+function findLineIntersections(obj){
+  if(obj.type!=='LINE')return[];
+  const pts=[];
+  for(const o of GeoMemory.objects){
+    if(o.id===obj.id||o.type!=='LINE')continue;
+    const ix=lineLineIntersect(obj.x1,obj.y1,obj.x2,obj.y2,o.x1,o.y1,o.x2,o.y2);
+    if(ix&&ix.t1>-1e-6&&ix.t1<1+1e-6&&ix.t2>-1e-6&&ix.t2<1+1e-6)
+      pts.push({x:ix.x,y:ix.y,t:Math.max(0,Math.min(1,ix.t1))});
+  }
+  return pts.sort((a,b)=>a.t-b.t);
+}
+function ptOnSegT(x,y,x1,y1,x2,y2){
+  const dx=x2-x1,dy=y2-y1,l2=dx*dx+dy*dy;
+  return l2<1e-12?0:Math.max(0,Math.min(1,((x-x1)*dx+(y-y1)*dy)/l2));
+}
+function nearestLineToPoint(wx,wy,maxPx){
+  const sp=worldToScreen(wx,wy); let best=null,bestD=maxPx;
+  for(const o of GeoMemory.objects){
+    if(o.type!=='LINE')continue;
+    const sa=worldToScreen(o.x1,o.y1),sb=worldToScreen(o.x2,o.y2);
+    const dx=sb.x-sa.x,dy=sb.y-sa.y,l2=dx*dx+dy*dy; if(l2<1)continue;
+    const t=Math.max(0,Math.min(1,((sp.x-sa.x)*dx+(sp.y-sa.y)*dy)/l2));
+    const d=Math.hypot(sp.x-sa.x-t*dx,sp.y-sa.y-t*dy);
+    if(d<bestD){bestD=d;best=o;}
+  } return best;
+}
+
+// TRIM
+let trimHoverSeg=null;
+function updateTrimHover(wx,wy){
+  trimHoverSeg=null;
+  const o=nearestLineToPoint(wx,wy,18); if(!o)return;
+  const ixs=findLineIntersections(o);
+  const t=ptOnSegT(wx,wy,o.x1,o.y1,o.x2,o.y2);
+  let tLo=0,tHi=1;
+  for(const ix of ixs){if(ix.t<=t)tLo=ix.t; if(ix.t>=t&&tHi===1)tHi=ix.t;}
+  const L=(a,b,t)=>a+(b-a)*t;
+  trimHoverSeg={x1:L(o.x1,o.x2,tLo),y1:L(o.y1,o.y2,tLo),x2:L(o.x1,o.x2,tHi),y2:L(o.y1,o.y2,tHi),tLo,tHi,obj:o};
+}
+function applyTrim(){
+  if(!trimHoverSeg)return;
+  const{tLo,tHi,obj:o}=trimHoverSeg;
+  const L=(a,b,t)=>a+(b-a)*t;
+  const x1=o.x1,y1=o.y1,x2=o.x2,y2=o.y2,lay=o.layer||'Layer_0';
+  GeoMemory.objects=GeoMemory.objects.filter(x=>x.id!==o.id);
+  if(tLo>1e-4)GeoMemory.addLine(x1,y1,L(x1,x2,tLo),L(y1,y2,tLo),lay);
+  if(tHi<1-1e-4)GeoMemory.addLine(L(x1,x2,tHi),L(y1,y2,tHi),x2,y2,lay);
+  trimHoverSeg=null; updateProps(); render(); showToast('Trimmed');
+}
+function drawTrimPreview(){
+  if(activeTool!=='trim'||!trimHoverSeg)return;
+  const{x1,y1,x2,y2}=trimHoverSeg;
+  const a=worldToScreen(x1,y1),b=worldToScreen(x2,y2);
+  ctx.save(); ctx.strokeStyle='rgba(255,68,68,0.9)'; ctx.lineWidth=3;
+  ctx.lineCap='round'; ctx.setLineDash([6,4]);
+  ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+  ctx.setLineDash([]); ctx.restore();
+}
+
+// EXTEND
+let extendPreview=null;
+function updateExtendHover(wx,wy){
+  extendPreview=null;
+  const o=nearestLineToPoint(wx,wy,18); if(!o)return;
+  const sp=worldToScreen(wx,wy);
+  const sa=worldToScreen(o.x1,o.y1),sb=worldToScreen(o.x2,o.y2);
+  const da=Math.hypot(sp.x-sa.x,sp.y-sa.y),db=Math.hypot(sp.x-sb.x,sp.y-sb.y);
+  const extStart=da<db;
+  const ex=extStart?o.x1:o.x2, ey=extStart?o.y1:o.y2;
+  const dx=o.x2-o.x1,dy=o.y2-o.y1,len=Math.hypot(dx,dy); if(len<1e-6)return;
+  const dir=extStart?-1:1, ux=dir*dx/len, uy=dir*dy/len;
+  let bestT=Infinity;
+  for(const other of GeoMemory.objects){
+    if(other.id===o.id||other.type!=='LINE')continue;
+    const ix=lineLineIntersect(ex,ey,ex+ux*1e6,ey+uy*1e6,other.x1,other.y1,other.x2,other.y2);
+    if(ix&&ix.t1>1e-4&&ix.t2>-1e-4&&ix.t2<1+1e-4&&ix.t1<bestT)bestT=ix.t1;
+  }
+  if(bestT===Infinity||bestT>1e5)return;
+  const nx=ex+ux*bestT,ny=ey+uy*bestT;
+  extendPreview=extStart?{x1:nx,y1:ny,x2:o.x2,y2:o.y2,nx,ny,end:'start',obj:o}
+                        :{x1:o.x1,y1:o.y1,x2:nx,y2:ny,nx,ny,end:'end',obj:o};
+}
+function applyExtend(){
+  if(!extendPreview)return;
+  const p=extendPreview;
+  if(p.end==='start'){p.obj.x1=p.nx;p.obj.y1=p.ny;}else{p.obj.x2=p.nx;p.obj.y2=p.ny;}
+  extendPreview=null; render(); showToast('Extended');
+}
+function drawExtendPreview(){
+  if(activeTool!=='extend'||!extendPreview)return;
+  const p=extendPreview;
+  const a=worldToScreen(p.x1,p.y1),b=worldToScreen(p.x2,p.y2);
+  ctx.save(); ctx.strokeStyle='rgba(0,212,255,0.85)'; ctx.lineWidth=2;
+  ctx.lineCap='round'; ctx.setLineDash([4,3]);
+  ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+  ctx.setLineDash([]);
+  const ep=worldToScreen(p.nx,p.ny);
+  ctx.fillStyle='var(--accent)'; ctx.beginPath(); ctx.arc(ep.x,ep.y,4,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+// BREAK
+let breakState={active:false,obj:null,pt1:null};
+function applyBreak(wx,wy){
+  const SNAP=18;
+  if(!breakState.active){
+    const o=nearestLineToPoint(wx,wy,SNAP); if(!o){showToast('Click on a line');return;}
+    breakState={active:true,obj:o,pt1:{x:wx,y:wy}};
+    showToast('Break: click second point');
+  } else {
+    const o=breakState.obj;
+    const t1=ptOnSegT(breakState.pt1.x,breakState.pt1.y,o.x1,o.y1,o.x2,o.y2);
+    const t2=ptOnSegT(wx,wy,o.x1,o.y1,o.x2,o.y2);
+    const lo=Math.min(t1,t2),hi=Math.max(t1,t2);
+    const L=(a,b,t)=>a+(b-a)*t,lay=o.layer||'Layer_0';
+    const ox1=o.x1,oy1=o.y1,ox2=o.x2,oy2=o.y2;
+    GeoMemory.objects=GeoMemory.objects.filter(x=>x.id!==o.id);
+    if(lo>1e-4)GeoMemory.addLine(ox1,oy1,L(ox1,ox2,lo),L(oy1,oy2,lo),lay);
+    if(hi<1-1e-4)GeoMemory.addLine(L(ox1,ox2,hi),L(oy1,oy2,hi),ox2,oy2,lay);
+    breakState={active:false,obj:null,pt1:null};
+    updateProps(); render(); showToast('Broken');
+  }
+}
+
+// SCALE
+function openScaleDialog(){
+  if(!selectedIds.size){showToast('Select objects first');setTool('select');return;}
+  const el=document.createElement('div');
+  el.style.cssText='position:fixed;inset:0;background:rgba(4,6,10,0.85);backdrop-filter:blur(6px);z-index:400;display:flex;align-items:center;justify-content:center;';
+  el.innerHTML='<div style="background:var(--panel);border:1px solid var(--border-hi);border-radius:6px;width:260px;overflow:hidden;font-family:var(--fm);box-shadow:0 20px 60px rgba(0,0,0,0.8);">'+
+    '<div style="padding:10px 14px;border-bottom:1px solid var(--border);background:var(--panel2);font-size:11px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;">Scale Selection</div>'+
+    '<div style="padding:16px;display:flex;flex-direction:column;gap:10px;">'+
+    '<label style="font-size:9px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;">Scale Factor</label>'+
+    '<input id="scale-f" type="number" value="2" step="0.1" min="0.01" style="background:var(--panel2);border:1px solid var(--border-hi);border-radius:3px;color:var(--t1);font-family:var(--fm);font-size:18px;padding:6px 10px;outline:none;text-align:center;">'+
+    '<div style="display:flex;gap:4px;">'+
+    '<button onclick="document.getElementById(\'scale-base\').value=\'centroid\'" style="flex:1;padding:5px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:3px;color:var(--accent);font-family:var(--fm);font-size:9px;cursor:pointer;">Centroid</button>'+
+    '<button onclick="document.getElementById(\'scale-base\').value=\'origin\'" style="flex:1;padding:5px;background:var(--panel2);border:1px solid var(--border);border-radius:3px;color:var(--t2);font-family:var(--fm);font-size:9px;cursor:pointer;">Origin</button>'+
+    '</div><input id="scale-base" type="hidden" value="centroid">'+
+    '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px;">'+
+    '<button onclick="this.closest(\'[style*=position]\').remove()" style="padding:5px 12px;background:var(--panel2);border:1px solid var(--border);border-radius:3px;color:var(--t2);font-family:var(--fm);font-size:10px;cursor:pointer;">Cancel</button>'+
+    '<button id="scale-ok" style="padding:5px 14px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:3px;color:var(--accent);font-family:var(--fm);font-size:10px;font-weight:700;cursor:pointer;">Apply</button>'+
+    '</div></div></div>';
+  document.body.appendChild(el);
+  el.querySelector('#scale-ok').onclick=()=>{
+    const f=parseFloat(el.querySelector('#scale-f').value)||1;
+    const useOrig=el.querySelector('#scale-base').value==='origin';
+    let cx=0,cy=0;
+    if(!useOrig){const pts=[];
+      for(const o of GeoMemory.objects){if(!selectedIds.has(o.id))continue;
+        if(o.type==='LINE'){pts.push({x:o.x1,y:o.y1},{x:o.x2,y:o.y2});}
+        else if(o.cx!==undefined){pts.push({x:o.cx,y:o.cy});}
+      }
+      if(pts.length){cx=pts.reduce((s,p)=>s+p.x,0)/pts.length;cy=pts.reduce((s,p)=>s+p.y,0)/pts.length;}
+    }
+    for(const o of GeoMemory.objects){if(!selectedIds.has(o.id))continue;
+      if(o.type==='LINE'){o.x1=cx+(o.x1-cx)*f;o.y1=cy+(o.y1-cy)*f;o.x2=cx+(o.x2-cx)*f;o.y2=cy+(o.y2-cy)*f;}
+      else if(o.cx!==undefined){o.cx=cx+(o.cx-cx)*f;o.cy=cy+(o.cy-cy)*f;o.r*=f;}
+    }
+    render();el.remove();showToast('Scaled x'+f);
+  };
+}
+
+// STRETCH
+let stretchState={active:false,endpt:null,obj:null,which:null};
+function updateStretchHover(wx,wy){
+  stretchState={active:false,endpt:null,obj:null,which:null};
+  const sp=worldToScreen(wx,wy); let bestD=18;
+  for(const o of GeoMemory.objects){
+    if(o.type!=='LINE')continue;
+    for(const[ex,ey,w] of [[o.x1,o.y1,'1'],[o.x2,o.y2,'2']]){
+      const ep=worldToScreen(ex,ey),d=Math.hypot(sp.x-ep.x,sp.y-ep.y);
+      if(d<bestD){bestD=d;stretchState={active:false,endpt:{x:ex,y:ey},obj:o,which:w};}
+    }
+  }
+}
+function applyStretch(wx,wy){
+  if(!stretchState.obj)return;
+  const o=stretchState.obj;
+  if(stretchState.which==='1'){o.x1=wx;o.y1=wy;}else{o.x2=wx;o.y2=wy;}
+  stretchState={active:false,endpt:null,obj:null,which:null};
+  render(); showToast('Stretched');
+}
+
+// TEXT IN MODEL SPACE
+function placeTextAt(wx,wy){
+  const sp=worldToScreen(wx,wy);
+  const el=document.createElement('div');
+  el.style.cssText='position:fixed;left:'+Math.min(sp.x,window.innerWidth-240)+'px;top:'+Math.max(sp.y-30,4)+'px;z-index:500;display:flex;gap:4px;align-items:center;';
+  el.innerHTML='<input id="txt-inp" type="text" placeholder="Text…" autocomplete="off" spellcheck="false" style="background:var(--panel);border:1px solid var(--accent);border-radius:3px;color:var(--t1);font-family:var(--fm);font-size:12px;padding:3px 8px;outline:none;min-width:140px;caret-color:var(--accent);">'+
+    '<select id="txt-h" style="background:var(--panel);border:1px solid var(--border);border-radius:3px;color:var(--t2);font-family:var(--fm);font-size:10px;padding:3px;">'+
+    '<option value="3">3</option><option value="5" selected>5</option><option value="7">7</option><option value="10">10</option><option value="14">14</option></select>';
+  document.body.appendChild(el);
+  const inp=el.querySelector('#txt-inp'); inp.focus();
+  const commit=()=>{
+    const txt=inp.value.trim();
+    if(txt){
+      const h=fromDisplay(parseFloat(el.querySelector('#txt-h').value)||5);
+      GeoMemory.addText(wx,wy,txt,h,activeLayer||'Layer_0');
+      updateProps(); render(); showToast('Text: "'+txt+'"');
+    }
+    el.remove();
+  };
+  inp.addEventListener('keydown',ev=>{if(ev.key==='Enter')commit();if(ev.key==='Escape')el.remove();});
+  setTimeout(()=>document.addEventListener('mousedown',function r(e){if(!el.contains(e.target)){el.remove();document.removeEventListener('mousedown',r);}},true),100);
+}
+
+// ARRAY
+function openArrayDialog(){
+  if(!selectedIds.size){showToast('Select objects first');setTool('select');return;}
+  const el=document.createElement('div');
+  el.style.cssText='position:fixed;inset:0;background:rgba(4,6,10,0.85);backdrop-filter:blur(6px);z-index:400;display:flex;align-items:center;justify-content:center;';
+  el.innerHTML='<div style="background:var(--panel);border:1px solid var(--border-hi);border-radius:6px;width:290px;overflow:hidden;font-family:var(--fm);box-shadow:0 20px 60px rgba(0,0,0,0.8);">'+
+    '<div style="padding:10px 14px;border-bottom:1px solid var(--border);background:var(--panel2);font-size:11px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;">Rectangular Array</div>'+
+    '<div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+
+    '<label style="font-size:9px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;">Rows</label>'+
+    '<label style="font-size:9px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;">Cols</label>'+
+    '<input id="ar-r" type="number" value="3" min="1" style="background:var(--panel2);border:1px solid var(--border-hi);border-radius:3px;color:var(--t1);font-family:var(--fm);font-size:14px;padding:5px 8px;outline:none;text-align:center;">'+
+    '<input id="ar-c" type="number" value="3" min="1" style="background:var(--panel2);border:1px solid var(--border-hi);border-radius:3px;color:var(--t1);font-family:var(--fm);font-size:14px;padding:5px 8px;outline:none;text-align:center;">'+
+    '<label style="font-size:9px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;">Row Spacing ('+unitMode+')</label>'+
+    '<label style="font-size:9px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;">Col Spacing ('+unitMode+')</label>'+
+    '<input id="ar-rs" type="number" value="50" step="1" style="background:var(--panel2);border:1px solid var(--border-hi);border-radius:3px;color:var(--t1);font-family:var(--fm);font-size:14px;padding:5px 8px;outline:none;text-align:center;">'+
+    '<input id="ar-cs" type="number" value="50" step="1" style="background:var(--panel2);border:1px solid var(--border-hi);border-radius:3px;color:var(--t1);font-family:var(--fm);font-size:14px;padding:5px 8px;outline:none;text-align:center;">'+
+    '<button onclick="this.closest(\'[style*=position]\').remove()" style="padding:5px;background:var(--panel2);border:1px solid var(--border);border-radius:3px;color:var(--t2);font-family:var(--fm);font-size:10px;cursor:pointer;">Cancel</button>'+
+    '<button id="ar-ok" style="padding:5px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:3px;color:var(--accent);font-family:var(--fm);font-size:10px;font-weight:700;cursor:pointer;">Create</button>'+
+    '</div></div>';
+  document.body.appendChild(el);
+  el.querySelector('#ar-ok').onclick=()=>{
+    const rows=parseInt(el.querySelector('#ar-r').value)||2;
+    const cols=parseInt(el.querySelector('#ar-c').value)||2;
+    const rowSp=fromDisplay(parseFloat(el.querySelector('#ar-rs').value)||50);
+    const colSp=fromDisplay(parseFloat(el.querySelector('#ar-cs').value)||50);
+    const src=GeoMemory.objects.filter(o=>selectedIds.has(o.id));
+    for(let r=0;r<rows;r++)for(let col=0;col<cols;col++){
+      if(r===0&&col===0)continue;
+      const dx=col*colSp,dy=r*rowSp;
+      for(const o of src){
+        if(o.type==='LINE')GeoMemory.addLine(o.x1+dx,o.y1-dy,o.x2+dx,o.y2-dy,o.layer||'Layer_0');
+        else if(o.cx!==undefined)GeoMemory.objects.push({...o,id:GeoMemory.nextId++,cx:o.cx+dx,cy:o.cy-dy});
+      }
+    }
+    selectedIds.clear();updateProps();render();el.remove();
+    showToast('Array '+rows+'x'+cols+': '+((rows*cols)-1)+' copies');
+  };
+}
+
+// Draw previews hook
+function drawNewToolPreviews(){
+  drawTrimPreview();
+  drawExtendPreview();
+  if(activeTool==='break'&&breakState.active&&breakState.pt1){
+    const sp=worldToScreen(breakState.pt1.x,breakState.pt1.y);
+    ctx.save();ctx.strokeStyle='rgba(255,170,0,0.9)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(sp.x,sp.y,6,0,Math.PI*2);ctx.stroke();ctx.restore();
+  }
+  if(activeTool==='stretch'&&stretchState.endpt){
+    const sp=worldToScreen(stretchState.endpt.x,stretchState.endpt.y);
+    ctx.save();ctx.fillStyle='rgba(0,212,255,0.8)';
+    ctx.beginPath();ctx.arc(sp.x,sp.y,5,0,Math.PI*2);ctx.fill();ctx.restore();
+  }
+}
+
+
+
+// ── LAYER SYSTEM ─────────────────────────────────────────────────────────────
+// Linetype definitions
+const LINETYPES = {
+  continuous: { dash: [],           label: '—————' },
+  dashed:     { dash: [8,4],        label: '- - - -' },
+  center:     { dash: [16,4,4,4],   label: '—·—·—' },
+  phantom:    { dash: [16,4,4,4,4,4], label: '——·——' },
 };
+
+// Default 4 layers + custom
+const LAYERS = {
+  'SOLID':  { name:'SOLID',  color:'#00d4ff', ltype:'continuous', weight:1.4, visible:true, locked:false },
+  'HIDDEN': { name:'HIDDEN', color:'#ff4444', ltype:'dashed',     weight:1.0, visible:true, locked:false },
+  'CENTER': { name:'CENTER', color:'#ffdd00', ltype:'center',     weight:0.8, visible:true, locked:false },
+  'LEADER': { name:'LEADER', color:'#39ff14', ltype:'continuous', weight:0.7, visible:true, locked:false },
+  'DIM':    { name:'DIM',    color:'#39ff14', ltype:'continuous', weight:0.7, visible:true, locked:false },
+  'Layer_0':{ name:'Layer_0',color:'#00d4ff', ltype:'continuous', weight:1.2, visible:true, locked:false },
+};
+let activeLayer = 'SOLID'; // default active layer
+
+function getLayer(name) {
+  return LAYERS[name] || LAYERS['Layer_0'];
+}
+
+function setActiveLayer(name) {
+  if (!LAYERS[name]) return;
+  activeLayer = name;
+  // Update layer UI
+  document.querySelectorAll('.layer-row').forEach(el => {
+    el.classList.toggle('active', el.dataset.layer === name);
+  });
+  const indicator = document.getElementById('active-layer-indicator');
+  const lay = getLayer(name);
+  if (indicator) {
+    indicator.textContent = lay.name;
+    indicator.style.color = lay.color;
+  }
+  showToast('Layer: ' + lay.name);
+}
+
+function addCustomLayer() {
+  const name = prompt('Layer name:');
+  if (!name || !name.trim()) return;
+  const key = name.trim().toUpperCase();
+  if (LAYERS[key]) { showToast('Layer already exists'); return; }
+  LAYERS[key] = { name:key, color:'#ffffff', ltype:'continuous', weight:1.0, visible:true, locked:false };
+  buildLayerPanel();
+  setActiveLayer(key);
+}
+
+function toggleLayerVisibility(name) {
+  if (!LAYERS[name]) return;
+  LAYERS[name].visible = !LAYERS[name].visible;
+  render();
+  buildLayerPanel();
+}
+
+function applyLayerStyle(layerName) {
+  const lay = getLayer(layerName);
+  if (!lay.visible) { ctx.globalAlpha = 0; return false; }
+  ctx.globalAlpha  = 1;
+  ctx.strokeStyle  = lay.color;
+  ctx.fillStyle    = lay.color;
+  ctx.lineWidth    = lay.weight;
+  const lt = LINETYPES[lay.ltype] || LINETYPES.continuous;
+  ctx.setLineDash(lt.dash.map(d => d * cam.zoom * 0.3));
+  return true;
+}
+
+function buildLayerPanel() {
+  const panel = document.getElementById('layer-list');
+  if (!panel) return;
+  panel.innerHTML = '';
+  for (const [key, lay] of Object.entries(LAYERS)) {
+    const row = document.createElement('div');
+    row.className = 'layer-row' + (key === activeLayer ? ' active' : '');
+    row.dataset.layer = key;
+    row.innerHTML =
+      '<span class="layer-vis" onclick="toggleLayerVisibility(\''+key+'\');event.stopPropagation()" title="Toggle visibility">'
+        + (lay.visible ? '👁' : '○') + '</span>'
+      + '<span class="layer-swatch" style="background:'+lay.color+';"></span>'
+      + '<span class="layer-name">' + lay.name + '</span>'
+      + '<span class="layer-ltype">' + (LINETYPES[lay.ltype]?.label || '—') + '</span>';
+    row.onclick = () => setActiveLayer(key);
+    panel.appendChild(row);
+  }
+}
+
+
+// ── MODEL-SPACE DIMENSION TOOL ───────────────────────────────────────────────
+let dimState = { active:false, p1:null };
+
+function drawDimension(p1w, p2w, commit=false) {
+  // Draw a linear dimension between two world points
+  const lay  = (typeof LAYERS!=='undefined' && LAYERS['DIM']) || {color:'#39ff14',weight:0.7};
+  const col  = lay.color;
+  const dx = p2w.x - p1w.x, dy = p2w.y - p1w.y;
+  const dist = Math.hypot(dx, dy);
+  const label = unitMode==='in'
+    ? (dist/25.4).toFixed(3) + '"'
+    : dist.toFixed(2) + ' mm';
+  const ang     = Math.atan2(dy, dx);
+  const perpAng = ang + Math.PI/2;
+  const OFFSET  = 8; // mm offset from geometry
+  const offX    = Math.cos(perpAng)*OFFSET, offY = Math.sin(perpAng)*OFFSET;
+
+  const p1s = worldToScreen(p1w.x,p1w.y);
+  const p2s = worldToScreen(p2w.x,p2w.y);
+  const d1s = worldToScreen(p1w.x+offX, p1w.y+offY);
+  const d2s = worldToScreen(p2w.x+offX, p2w.y+offY);
+
+  ctx.save();
+  ctx.strokeStyle = col; ctx.fillStyle = col;
+  ctx.lineWidth   = lay.weight; ctx.setLineDash([]);
+
+  // Extension lines
+  const GAP = 3*cam.zoom, EXT = 5*cam.zoom;
+  const cos = Math.cos(perpAng), sin = Math.sin(perpAng);
+  ctx.beginPath();
+  ctx.moveTo(p1s.x+cos*GAP, p1s.y+sin*GAP); ctx.lineTo(d1s.x+cos*EXT, d1s.y+sin*EXT);
+  ctx.moveTo(p2s.x+cos*GAP, p2s.y+sin*GAP); ctx.lineTo(d2s.x+cos*EXT, d2s.y+sin*EXT);
+  ctx.stroke();
+
+  // Dimension line
+  ctx.beginPath(); ctx.moveTo(d1s.x,d1s.y); ctx.lineTo(d2s.x,d2s.y); ctx.stroke();
+
+  // Arrows
+  const AL = 8, AW = 3;
+  const adx = d2s.x-d1s.x, ady = d2s.y-d1s.y, alen = Math.hypot(adx,ady);
+  if(alen > 1) {
+    const ux = adx/alen, uy = ady/alen;
+    [[d1s.x,d1s.y,1],[d2s.x,d2s.y,-1]].forEach(([ax,ay,dir])=>{
+      ctx.beginPath();
+      ctx.moveTo(ax,ay);
+      ctx.lineTo(ax+dir*ux*AL - uy*AW, ay+dir*uy*AL + ux*AW);
+      ctx.lineTo(ax+dir*ux*AL + uy*AW, ay+dir*uy*AL - ux*AW);
+      ctx.closePath(); ctx.fill();
+    });
+  }
+
+  // Label
+  const mx = (d1s.x+d2s.x)/2, my = (d1s.y+d2s.y)/2;
+  const fontSize = Math.max(10, 3.5*cam.zoom);
+  ctx.font = `${fontSize}px Fira Code,monospace`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const textAng = Math.atan2(d2s.y-d1s.y, d2s.x-d1s.x);
+  ctx.save();
+  ctx.translate(mx,my);
+  // Keep text right-side up
+  let rot = textAng;
+  if(rot > Math.PI/2 || rot < -Math.PI/2) rot += Math.PI;
+  ctx.rotate(rot);
+  ctx.fillStyle = C.bg; ctx.fillRect(-ctx.measureText(label).width/2-2, -fontSize/2-1, ctx.measureText(label).width+4, fontSize+2);
+  ctx.fillStyle = col; ctx.fillText(label, 0, 0);
+  ctx.restore();
+  ctx.restore();
+
+  if(commit) {
+    // Store as a DIM entity in GeoMemory
+    GeoMemory.objects.push({
+      id: GeoMemory.nextId++, type:'DIM',
+      x1:p1w.x,y1:p1w.y, x2:p2w.x,y2:p2w.y,
+      layer:'DIM', label
+    });
+    updateProps(); render();
+  }
+}
+
+function drawDimPreview() {
+  if(activeTool!=='dim' || !dimState.p1) return;
+  drawDimension(dimState.p1, mouseWorld, false);
+  // Draw crosshair at first point
+  const sp = worldToScreen(dimState.p1.x, dimState.p1.y);
+  ctx.save(); ctx.strokeStyle='#39ff14'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.arc(sp.x,sp.y,5,0,Math.PI*2); ctx.stroke();
+  ctx.setLineDash([]); ctx.restore();
+}
 
 function render() {
   const W=canvas.width, H=canvas.height;
@@ -4436,7 +5132,9 @@ function render() {
   drawRotatePreview();
   drawMirrorPreview();
   drawMeasurePreview();
+  drawChamferPreview();
   drawSelBox();
+  if(typeof drawNewToolPreviews==='function') drawNewToolPreviews();
 }
 
 function drawGrid(W,H) {
@@ -4451,7 +5149,7 @@ function drawGrid(W,H) {
   for(let y=y0;y<=y1;y+=spacing){ if(Math.round(y/spacing)%major!==0){ const sy=worldToScreen(0,y).y; ctx.moveTo(0,sy); ctx.lineTo(W,sy); } }
   ctx.stroke();
 
-  ctx.strokeStyle=C.gridMaj; ctx.beginPath();
+  ctx.lineWidth=1.2; ctx.strokeStyle=C.gridMaj; ctx.beginPath();
   for(let x=x0;x<=x1;x+=spacing){ if(Math.round(x/spacing)%major===0){ const sx=worldToScreen(x,0).x; ctx.moveTo(sx,0); ctx.lineTo(sx,H); } }
   for(let y=y0;y<=y1;y+=spacing){ if(Math.round(y/spacing)%major===0){ const sy=worldToScreen(0,y).y; ctx.moveTo(0,sy); ctx.lineTo(W,sy); } }
   ctx.stroke();
@@ -4465,24 +5163,54 @@ function drawGrid(W,H) {
 }
 
 function drawEntities() {
+  (function drawOrigin() {
+    const o = worldToScreen(0, 0);
+    const sz = 8;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0,212,255,0.35)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(o.x-sz,o.y); ctx.lineTo(o.x+sz,o.y);
+    ctx.moveTo(o.x,o.y-sz); ctx.lineTo(o.x,o.y+sz);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(o.x,o.y,3,0,Math.PI*2);
+    ctx.strokeStyle='rgba(0,212,255,0.5)'; ctx.setLineDash([]);
+    ctx.stroke();
+    ctx.fillStyle='rgba(0,212,255,0.4)';
+    ctx.font='9px Fira Code,monospace';
+    ctx.fillText('0,0',o.x+6,o.y-5);
+    ctx.restore();
+  })();
+
   ctx.save();
   for(const o of GeoMemory.objects){
-    const sel=selectedIds.has(o.id);
+    const sel = selectedIds.has(o.id);
+    // Layer visibility
+    const _lay = (typeof LAYERS !== 'undefined') && LAYERS[o.layer];
+    if(_lay && !_lay.visible && !sel) continue;
+    // Layer style
+    const _col = sel ? C.entitySel : (_lay ? _lay.color : C.entity);
+    const _lw  = sel ? 2.5 : (_lay ? _lay.weight : 1.4);
+    const _lt  = (!sel && _lay && typeof LINETYPES !== 'undefined')
+                   ? LINETYPES[_lay.ltype] || LINETYPES.continuous
+                   : LINETYPES && LINETYPES.continuous || {dash:[]};
+    ctx.setLineDash(_lt.dash.map(d => d * cam.zoom * 0.3));
     if(o.type==='LINE'){
       const a=worldToScreen(o.x1,o.y1), b=worldToScreen(o.x2,o.y2);
       if(sel){ ctx.shadowColor='rgba(255,170,0,0.5)'; ctx.shadowBlur=8; }
-      ctx.strokeStyle=sel?C.entitySel:C.entity;
-      ctx.lineWidth=sel?2:1.2;
+      ctx.strokeStyle=_col;
+      ctx.lineWidth=_lw;
       ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
       ctx.shadowBlur=0;
-      drawDot(a.x,a.y,sel?C.entitySel:C.entity);
-      drawDot(b.x,b.y,sel?C.entitySel:C.entity);
+      drawDot(a.x,a.y,_col);
+      drawDot(b.x,b.y,_col);
 
     } else if(o.type==='POLYLINE'){
       if(o.pts.length < 2) continue;
       if(sel){ ctx.shadowColor='rgba(255,170,0,0.5)'; ctx.shadowBlur=10; }
-      ctx.strokeStyle=sel?C.entitySel:C.entity;
-      ctx.lineWidth=sel?2:1.2;
+      ctx.strokeStyle=_col; ctx.lineWidth=_lw;
       ctx.beginPath();
       const p0=worldToScreen(o.pts[0].x, o.pts[0].y);
       ctx.moveTo(p0.x, p0.y);
@@ -4497,9 +5225,21 @@ function drawEntities() {
       for(let i=0;i<o.pts.length;i++){
         const p=worldToScreen(o.pts[i].x,o.pts[i].y);
         const isEndpoint = !o.closed && (i===0 || i===o.pts.length-1);
-        drawDot(p.x,p.y,sel?C.entitySel:C.entity, isEndpoint?2.5:1.5);
+        drawDot(p.x,p.y,_col, isEndpoint?2.5:1.5);
       }
 
+    } else if(o.type==='DIM'){
+      drawDimension({x:o.x1,y:o.y1},{x:o.x2,y:o.y2},false);
+    } else if(o.type==='TEXT'){
+      const sp=worldToScreen(o.x,o.y);
+      const px=Math.max(8,o.height*cam.zoom);
+      ctx.save();
+      ctx.font=px+'px Fira Code,monospace';
+      ctx.fillStyle=sel?C.entitySel:C.entity;
+      ctx.textBaseline='bottom';
+      ctx.fillText(o.text,sp.x,sp.y);
+      if(sel){const m=ctx.measureText(o.text);ctx.strokeStyle=C.entitySel;ctx.lineWidth=1;ctx.setLineDash([2,2]);ctx.strokeRect(sp.x-2,sp.y-px-2,m.width+4,px+4);ctx.setLineDash([]);}
+      ctx.restore();
     } else if(o.type==='POINT'){
       const p=worldToScreen(o.x,o.y);
       drawDot(p.x,p.y,C.point);
@@ -4997,10 +5737,15 @@ function commitDxfImport() {
 }
 
 // ── DXF EXPORT ──────────────────────────────────────────
-function buildDXF(objects) {
-  const f=n=>n.toFixed(4), lines=[];
+function buildDXF(objects, units) {
+  // units: 'mm' (default) or 'in'
+  // $INSUNITS: 4 = mm, 1 = inches
+  const insunits = (units === 'in') ? '1' : '4';
+  const cvt = (mm) => (units === 'in') ? mm / MM_PER_IN : mm;
+  const f = n => cvt(n).toFixed(6);
+  const lines=[];
   // AC1014 = R14, minimum version that supports LWPOLYLINE
-  lines.push('0','SECTION','2','HEADER','9','$ACADVER','1','AC1014','9','$INSUNITS','70','4','0','ENDSEC');
+  lines.push('0','SECTION','2','HEADER','9','$ACADVER','1','AC1014','9','$INSUNITS','70',insunits,'0','ENDSEC');
   lines.push('0','SECTION','2','TABLES','0','TABLE','2','LAYER','70','1','0','LAYER','2','Layer_0','70','0','62','7','6','CONTINUOUS','0','ENDTAB','0','ENDSEC');
   lines.push('0','SECTION','2','ENTITIES');
   for(const o of objects){
@@ -5137,8 +5882,8 @@ function loadKAD(event) {
 function exportDXF() {
   const objs=GeoMemory.objects;
   if(!objs.length){ showToast('No geometry to export'); return; }
-  downloadText(buildDXF(objs),'drawing.dxf','text/plain');
-  showToast(`Exported ${objs.length} entities`);
+  downloadText(buildDXF(objs, unitMode),'drawing.dxf','text/plain');
+  showToast(`Exported ${objs.length} entities (${unitMode})`);
 }
 
 // ── SCAD EXPORT ─────────────────────────────────────────
@@ -5322,19 +6067,15 @@ function showToast(msg) {
 // ── INIT ────────────────────────────────────────────────
 requestAnimationFrame(()=>{
   requestAnimationFrame(()=>{
+    _patchSetTool();
     resizeCanvas();
     initCamera();
     setTool('select');
     document.getElementById('cc-year').textContent = new Date().getFullYear();
-    // Auto-select inches silently — no splash for Mosaic Iron clients
-    splashSelectUnit('in');
-    // Activate status bar marquee if content overflows (mobile)
-    setTimeout(initStatusMarquee, 200);
+    initSplash();
     setTimeout(()=>{
-      GeoMemory.addLine(-15,0,15,0);
-      GeoMemory.addLine(0,-15,0,15);
       render();
-      showToast('Demo loaded · Press L/A/C/R/P/F to draw');
+      showToast('Press K for KOMMAND · L line · A arc · C circle');
     },100);
   });
 });
@@ -5403,40 +6144,37 @@ function drawChamferPreview() {
   ctx.restore();
 }
 
-// ── COPY / DUPLICATE ──────────────────────────────────────────────────────────
-let copyOffset = {x:10, y:-10}; // default offset in mm
+// ── CLIPBOARD ────────────────────────────────────────────────────────────────
+let _clipboard  = [];
+let _pasteCount = 0;
+const PASTE_STEP = 10;
 
 function copySelected() {
-  const ids = [...selectedIds];
-  if (!ids.length) { showToast('Select objects first'); return; }
-  const copies = [];
-  for (const id of ids) {
-    const o = GeoMemory.objects.find(x=>x.id===id);
-    if (!o) continue;
-    if (o.type==='LINE') {
-      copies.push({type:'LINE',x1:o.x1+copyOffset.x,y1:o.y1+copyOffset.y,
-                                x2:o.x2+copyOffset.x,y2:o.y2+copyOffset.y});
-    } else if (o.type==='CIRCLE') {
-      copies.push({type:'CIRCLE',cx:o.cx+copyOffset.x,cy:o.cy+copyOffset.y,r:o.r});
-    } else if (o.type==='ARC') {
-      copies.push({type:'ARC',cx:o.cx+copyOffset.x,cy:o.cy+copyOffset.y,
-                   r:o.r,startAngle:o.startAngle,endAngle:o.endAngle,ccw:o.ccw});
-    } else if (o.type==='POLYLINE') {
-      copies.push({type:'POLYLINE',pts:o.pts.map(p=>({x:p.x+copyOffset.x,y:p.y+copyOffset.y})),
-                   closed:o.closed});
-    }
+  if (!selectedIds.size) { showToast('Select objects first'); return; }
+  _clipboard = []; _pasteCount = 0;
+  for (const id of selectedIds) {
+    const o = GeoMemory.objects.find(x => x.id === id);
+    if (o) _clipboard.push(JSON.parse(JSON.stringify(o)));
   }
-  for (const c of copies) {
-    if (c.type==='LINE') GeoMemory.addLine(c.x1,c.y1,c.x2,c.y2);
-    else if (c.type==='CIRCLE') GeoMemory.addCircle(c.cx,c.cy,c.r);
-    else if (c.type==='ARC') GeoMemory.addArc(c.cx,c.cy,c.r,c.startAngle,c.endAngle,c.ccw);
-    else if (c.type==='POLYLINE') {
-      const id = GeoMemory.nextId++;
-      GeoMemory.objects.push({...c, id});
-    }
+  showToast('Copied ' + _clipboard.length + ' object' + (_clipboard.length!==1?'s':'') + ' · Ctrl+V to paste');
+}
+
+function pasteSelected() {
+  if (!_clipboard.length) { showToast('Nothing to paste · Ctrl+C first'); return; }
+  _pasteCount++;
+  const dx = PASTE_STEP * _pasteCount, dy = -PASTE_STEP * _pasteCount;
+  selectedIds.clear();
+  for (const o of _clipboard) {
+    let n; const lay = o.layer || 'Layer_0';
+    if      (o.type==='LINE')     n = GeoMemory.addLine(o.x1+dx,o.y1+dy,o.x2+dx,o.y2+dy,lay);
+    else if (o.type==='CIRCLE')   n = GeoMemory.addCircle(o.cx+dx,o.cy+dy,o.r,lay);
+    else if (o.type==='ARC')      n = GeoMemory.addArc(o.cx+dx,o.cy+dy,o.r,o.startA,o.endA,o.ccw,lay);
+    else if (o.type==='POLYLINE') n = GeoMemory.addPolyline(o.pts.map(p=>({x:p.x+dx,y:p.y+dy})),o.closed,lay);
+    else if (o.type==='TEXT')     n = GeoMemory.addText(o.x+dx,o.y+dy,o.text,o.height,lay);
+    if (n) selectedIds.add(n.id);
   }
-  render();
-  showToast(`Copied ${copies.length} object${copies.length>1?'s':''}`);
+  updateProps(); render();
+  showToast('Pasted ' + _clipboard.length + ' object' + (_clipboard.length!==1?'s':''));
 }
 
 
@@ -6290,6 +7028,330 @@ function kvInit() {
 
 
 kvInit();
+
+// ════════════════════════════════════════════════════════════════════════════
+//  KOMMAND LINE — persistent coordinate + command entry bar
+//  Replaces the floating dyn-input popup.
+//  Always receives keyboard input. No popup interruptions.
+// ════════════════════════════════════════════════════════════════════════════
+
+const kInput   = document.getElementById('kommand-input');
+const kContext = document.getElementById('kommand-context');
+const kEcho    = document.getElementById('kommand-echo');
+const kPrefix  = document.getElementById('kommand-prefix');
+
+// Keep context label in sync — patch setTool after DOM ready
+function _patchSetTool() {
+  const _orig = setTool;
+  window.setTool = function(t) {
+    _orig(t);
+    if (kContext) kContext.textContent = t.toUpperCase();
+    if (kPrefix)  kPrefix.textContent  = '≫';
+    kommandClear();
+  };
+}
+
+// Echo a message to the kommand line (replaces showToast for workflow msgs)
+function kecho(msg, type) {
+  if (!kEcho) return;
+  kEcho.textContent = msg;
+  kEcho.style.color = type==='ok'  ? 'var(--green)'  :
+                      type==='err' ? 'var(--red)'    :
+                      type==='dim' ? 'var(--amber)'  : 'var(--t3)';
+  // Also show toast for visibility
+  showToast(msg);
+}
+
+function kommandClear() {
+  if (kInput) kInput.value = '';
+  if (kPrefix) kPrefix.textContent = '≫';
+}
+
+// Command word table
+const KOMMANDS = {
+  'L':       () => setTool('line'),
+  'LINE':    () => setTool('line'),
+  'A':       () => setTool('arc'),
+  'ARC':     () => setTool('arc'),
+  'C':       () => setTool('circle'),
+  'CIRCLE':  () => setTool('circle'),
+  'R':       () => setTool('rect'),
+  'RECT':    () => setTool('rect'),
+  'P':       () => setTool('polygon'),
+  'POLY':    () => setTool('polygon'),
+  'O':       () => setTool('offset'),
+  'OFFSET':  () => setTool('offset'),
+  'M':       () => setTool('mirror'),
+  'MIRROR':  () => setTool('mirror'),
+  'D':       () => setTool('dim'),
+  'DIM':     () => setTool('dim'),
+  'MEASURE': () => setTool('measure'),
+  'TR':      () => setTool('trim'),
+  'TRIM':    () => setTool('trim'),
+  'EX':      () => setTool('extend'),
+  'EXTEND':  () => setTool('extend'),
+  'BR':      () => setTool('break'),
+  'BREAK':   () => setTool('break'),
+  'SC':      () => { if(!selectedIds.size){setTool('select');kecho('Select objects then type SC');} else openScaleDialog(); },
+  'SCALE':   () => openScaleDialog(),
+  'TX':      () => setTool('text'),
+  'TEXT':    () => setTool('text'),
+  'AR':      () => openArrayDialog(),
+  'ARRAY':   () => openArrayDialog(),
+  'ST':      () => setTool('stretch'),
+  'STRETCH': () => setTool('stretch'),
+  'F':       () => setTool('fillet'),
+  'FILLET':  () => setTool('fillet'),
+  'CH':      () => setTool('chamfer'),
+  'CHAMFER': () => setTool('chamfer'),
+  'V':       () => setTool('select'),
+  'SELECT':  () => setTool('select'),
+  'Z':       () => { zoomExtents(); kecho('Zoom extents'); },
+  'G':       () => { toggleGrid();  kecho('Grid toggled'); },
+  'S':       () => { toggleSnap();  kecho('Snap toggled'); },
+  'U':       () => { toggleUnits(); kecho('Units: ' + unitMode); },
+  'UNDO':    () => { if(typeof undo==='function') undo(); else { GeoMemory.objects.pop && GeoMemory.objects.pop(); render(); } kecho('Undo'); },
+  'COPY':    () => copySelected(),
+  'CP':      () => copySelected(),
+  'PASTE':   () => pasteSelected(),
+  'PA':      () => pasteSelected(),
+  'REDO':    () => { if(typeof redo==='function') redo(); kecho('Redo'); },
+  'CLEAR':   () => { if(confirm('Clear all?')){ GeoMemory.clear(); render(); kecho('Cleared'); } },
+  'NEW':     () => { if(confirm('New document?')){ GeoMemory.clear(); render(); kecho('New document'); } },
+};
+
+// Parse coordinate input: "X,Y" | "@dX,dY" | "@D<A"
+function parseKommandCoord(raw) {
+  const s = raw.trim();
+  // Polar relative: @D<A
+  const polar = s.match(/^@([+-]?[\d.]+)<([+-]?[\d.]+)$/);
+  if (polar) {
+    const d = fromDisplay(parseFloat(polar[1]));
+    const a = parseFloat(polar[2]) * Math.PI / 180;
+    return { mode:'polar', d, a };
+  }
+  // Relative: @dX,dY
+  const rel = s.match(/^@([+-]?[\d.]+)[,\s]+([+-]?[\d.]+)$/);
+  if (rel) {
+    return { mode:'rel', dx:fromDisplay(parseFloat(rel[1])), dy:fromDisplay(parseFloat(rel[2])) };
+  }
+  // Absolute: X,Y
+  const abs = s.match(/^([+-]?[\d.]+)[,\s]+([+-]?[\d.]+)$/);
+  if (abs) {
+    return { mode:'abs', x:fromDisplay(parseFloat(abs[1])),
+                         y:fromDisplay(parseFloat(abs[2])) };
+  }
+  // Single number = distance along current direction
+  const num = s.match(/^([+-]?[\d.]+)$/);
+  if (num) return { mode:'dist', d: fromDisplay(parseFloat(num[1])) };
+  return null;
+}
+
+// Resolve coord to absolute world position given last point
+function resolveCoord(parsed, lastX, lastY, lastAngle) {
+  if (!parsed) return null;
+  if (parsed.mode === 'abs') return { x: parsed.x, y: parsed.y };
+  if (parsed.mode === 'rel') return { x: lastX + parsed.dx, y: lastY + parsed.dy };
+  if (parsed.mode === 'polar') {
+    return { x: lastX + parsed.d * Math.cos(parsed.a),
+             y: lastY + parsed.d * Math.sin(parsed.a) };
+  }
+  if (parsed.mode === 'dist' && lastAngle !== undefined) {
+    return { x: lastX + parsed.d * Math.cos(lastAngle),
+             y: lastY + parsed.d * Math.sin(lastAngle) };
+  }
+  return null;
+}
+
+// Handle KOMMAND input keydown
+kInput.addEventListener('keydown', function(e) {
+  const raw = kInput.value.trim().toUpperCase();
+
+  if (e.key === 'Escape') {
+    e.stopPropagation();
+    kommandClear();
+    cancelTool();
+    render();
+    kecho('Cancelled');
+    return;
+  }
+
+  if (e.key === 'Enter' || e.key === 'Tab') {
+    e.preventDefault();
+    if (!raw) return;
+
+    // Check command words first
+    if (KOMMANDS[raw]) {
+      KOMMANDS[raw]();
+      kommandClear();
+      return;
+    }
+
+    // Try coordinate parse
+    const parsed = parseKommandCoord(kInput.value.trim());
+    if (parsed) {
+      applyKommandCoord(parsed);
+      kommandClear();
+      return;
+    }
+
+    kecho('Unknown: ' + raw, 'err');
+    return;
+  }
+
+  // Live prefix update
+  setTimeout(() => {
+    const v = kInput.value.trim();
+    if (!kPrefix) return;
+    if (v.startsWith('@') && v.includes('<')) kPrefix.textContent = 'POL';
+    else if (v.startsWith('@'))               kPrefix.textContent = 'REL';
+    else if (v.match(/^[a-zA-Z]/))            kPrefix.textContent = 'CMD';
+    else if (v.match(/^[0-9+\-]/))           kPrefix.textContent = 'ABS';
+    else                                      kPrefix.textContent = '≫';
+  }, 0);
+});
+
+// Apply a resolved coordinate to the current tool state
+function applyKommandCoord(parsed) {
+  // Get last point from current tool state
+  let lastX = 0, lastY = 0, lastAngle = 0;
+  if (activeTool === 'line' && lineState && lineState.active) {
+    lastX = lineState.x1; lastY = lineState.y1;
+    if (lineChain && lineChain.length >= 2) {
+      const a = lineChain[lineChain.length-2], b = lineChain[lineChain.length-1];
+      lastAngle = Math.atan2(b.y-a.y, b.x-a.x);
+    }
+  }
+  const pt = resolveCoord(parsed, lastX, lastY, lastAngle);
+  if (!pt) { kecho('Could not resolve coordinate', 'err'); return; }
+
+  // Simulate a click at the resolved world point
+  simulateWorldClick(pt.x, pt.y);
+  kecho(fmtU(pt.x) + ', ' + fmtU(pt.y), 'ok');
+}
+
+// Simulate a drawing click at world coordinates
+function simulateWorldClick(wx, wy) {
+  // Set the globals onMouseDown reads — clientX/clientY are never used by the handler
+  mouseWorld  = { x: wx, y: wy };
+  const sp    = worldToScreen(wx, wy);
+  mouseScreen = { x: sp.x, y: sp.y };
+  snapActive  = false;  // disable snap so exact typed coordinate is used as-is
+  snapPoint   = null;
+
+  const fakeEvent = {
+    clientX: sp.x + canvas.getBoundingClientRect().left,
+    clientY: sp.y + canvas.getBoundingClientRect().top,
+    button: 0, shiftKey: false, altKey: false, ctrlKey: false,
+    preventDefault: ()=>{}, stopPropagation: ()=>{}
+  };
+  if (typeof onMouseDown === 'function') onMouseDown(fakeEvent);
+}
+
+// Keep canvas from stealing focus from kommand bar unless clicking canvas
+canvas.addEventListener('mousedown', () => {
+  // Canvas click: defocus kommand so tool shortcuts work
+  if (document.activeElement === kInput) kInput.blur();
+});
+
+// KOMMAND focus — K key, OR any coord-start character while a draw tool is active
+const DRAW_TOOLS = new Set(['line','rect','polygon','offset','rotate','circle','arc',
+                             'fillet','chamfer','mirror','trim','extend','break',
+                             'scale','stretch','text','dim']);
+document.addEventListener('keydown', function(ev) {
+  if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)) return;
+  if(document.activeElement === kInput) return;
+  if(ev.ctrlKey || ev.metaKey || ev.altKey) return;
+
+  // K always focuses KOMMAND
+  if(ev.key==='k'||ev.key==='K') {
+    ev.preventDefault();
+    kInput.focus(); kInput.select();
+    if(kContext) kContext.style.color='var(--accent)';
+    return;
+  }
+
+  // Auto-focus KOMMAND when typing coord chars while a draw tool is active
+  const isCoordChar = /^[@0-9\.\-]$/.test(ev.key);
+  if(isCoordChar && DRAW_TOOLS.has(activeTool)) {
+    ev.preventDefault();
+    kInput.focus();
+    kInput.value = ev.key === '.' ? '0.' : ev.key; // seed with typed char
+    kInput.setSelectionRange(kInput.value.length, kInput.value.length);
+    if(kContext) kContext.style.color='var(--accent)';
+    // Trigger prefix update
+    kInput.dispatchEvent(new Event('input'));
+  }
+});
+
+kInput.addEventListener('blur', () => {
+  if(kContext) kContext.style.color='';
+  kommandClear();
+});
+
+// Override showDynInput to echo to kommand line instead of popup
+function showDynInput(seed) {
+  if (kInput) {
+    kInput.value = seed || '';
+    kInput.focus();
+    kInput.select();
+  }
+}
+function closeDynInput() { kommandClear(); }
+function positionDynInput() { /* no-op — kommand is fixed */ }
+
+// Sync context label when tools change
+document.addEventListener('DOMContentLoaded', () => {
+  if (kContext) kContext.textContent = (activeTool||'SELECT').toUpperCase();
+});
+
+// ── Theme toggle ─────────────────────────────────────────────────────────────
+let _lightMode = false;
+
+function _applyTheme(light) {
+  _lightMode = light;
+  document.body.classList.toggle('light-mode', _lightMode);
+  const di = document.getElementById('theme-icon-dark');
+  const li = document.getElementById('theme-icon-light');
+  const lb = document.getElementById('theme-label');
+  if(di) di.style.display = _lightMode ? 'none' : '';
+  if(li) li.style.display = _lightMode ? ''     : 'none';
+  if(lb) lb.textContent   = _lightMode ? 'LIGHT' : 'DARK';
+  if(typeof render === 'function') render();
+}
+
+function toggleTheme() {
+  // User explicitly chose — save preference and override OS setting
+  const next = !_lightMode;
+  try { localStorage.setItem('kad-theme', next ? 'light' : 'dark'); } catch(e) {}
+  _applyTheme(next);
+}
+
+// Init: prefer saved user choice, fall back to OS/device setting
+(function() {
+  let saved = null;
+  try { saved = localStorage.getItem('kad-theme'); } catch(e) {}
+
+  if(saved === 'light') {
+    _applyTheme(true);
+  } else if(saved === 'dark') {
+    _applyTheme(false);
+  } else {
+    // No saved preference — follow OS/device prefers-color-scheme
+    const prefersDark = window.matchMedia &&
+                        window.matchMedia('(prefers-color-scheme: dark)').matches;
+    _applyTheme(!prefersDark); // OS dark → our dark mode (light-mode class OFF)
+  }
+
+  // Live-update if OS theme changes while app is open (no saved preference)
+  if(window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      let pref = null;
+      try { pref = localStorage.getItem('kad-theme'); } catch(ex) {}
+      if(!pref) _applyTheme(!e.matches); // only follow OS if user hasn't overridden
+    });
+  }
+})();
 
 </script>
 
