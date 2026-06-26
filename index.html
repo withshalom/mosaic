@@ -2486,9 +2486,9 @@ footer {
     <div class="nav-brand-sub">Steel · Fabrication · Drafting</div>
   </a>
   <ul class="nav-links">
-    <a href="#services" onclick="scrollTo('services');return false;">Services</a>
-    <a href="#about" onclick="scrollTo('about');return false;">About</a>
-    <a href="#contact" onclick="scrollTo('contact');return false;">Contact</a>
+    <a href="#services" onclick="siteScroll('services');return false;">Services</a>
+    <a href="#about" onclick="siteScroll('about');return false;">About</a>
+    <a href="#contact" onclick="siteScroll('contact');return false;">Contact</a>
     <a href="https://quote.mosaiciron.com" class="nav-quote" target="_blank">Request a Quote</a>
   </ul>
   <button id="btn-open-kad" onclick="openDraftingMode()">
@@ -2509,7 +2509,7 @@ footer {
   <p class="hero-tagline">Steel-focused, not steel-exclusive — from detailing, fabrication, and welding to MEP and construction drafting. Accurate work, buildable the first time.</p>
   <div class="hero-ctas">
     <a href="https://quote.mosaiciron.com" class="cta-primary" target="_blank">Request a Quote</a>
-    <a href="#services" class="cta-secondary" onclick="scrollTo('services');return false;">Our Services</a>
+    <a href="#services" class="cta-secondary" onclick="siteScroll('services');return false;">Our Services</a>
     <button class="cta-secondary" onclick="openDraftingMode()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="11" height="11"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
       Enter Draftspace
@@ -2662,11 +2662,13 @@ function closeDraftingMode() {
 }
 
 // Scroll helper — works inside the fixed #site-scroll container
-function scrollTo(id) {
+function siteScroll(id) {
   const container = document.getElementById('site-scroll');
   const target = document.getElementById(id);
   if (!container || !target) return;
-  const top = target.offsetTop - 50;
+  const containerRect = container.getBoundingClientRect();
+  const targetRect = target.getBoundingClientRect();
+  const top = container.scrollTop + (targetRect.top - containerRect.top) - 50;
   container.scrollTo({ top, behavior: 'smooth' });
 }
 
