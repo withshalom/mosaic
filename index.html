@@ -859,17 +859,29 @@ body.kanvas-mode { --accent: #0090a8; --accent-dim: #006888; --accent-glow: rgba
 #unit-seg-mm.active { background: var(--accent); color: var(--void); font-weight:700; }
 #unit-seg-in.active { background: #ffaa00; color: #060e08; font-weight:700; }
 
-/* ── Return to KADsuite ───────────────────────────────────────────── */
+/* ── Visit KADsuite ───────────────────────────────────────────────── */
+/* Deliberately NOT placed near #btn-close-kad ("Return to Site" in the
+   escape bar). That button lives top-right, fixed, z-index:999. This one
+   is anchored bottom-left, low-emphasis, so the two can't be fat-fingered
+   for each other. Opens in a new tab so an accidental click never blows
+   away unsaved drafting work in this tab. */
 #btn-return-kadsuite {
-  display:flex; align-items:center; gap:6px; padding:4px 12px;
-  background:none; border:1px solid rgba(0,212,255,0.4); border-radius:3px;
-  color:#00d4ff; font-family:var(--fm,'Fira Code',monospace); font-size:9px;
+  position: fixed;
+  left: 12px; bottom: 12px;
+  z-index: 25; /* below the 36px escape bar (999) and topbar (30), never overlaps them */
+  display:flex; align-items:center; gap:6px; padding:4px 10px;
+  background:rgba(12,24,36,0.85); border:1px solid rgba(0,212,255,0.3); border-radius:3px;
+  color:rgba(0,212,255,0.75); font-family:var(--fm,'Fira Code',monospace); font-size:8px;
   letter-spacing:0.14em; text-transform:uppercase; cursor:pointer;
   transition:all .2s; text-decoration:none; flex-shrink:0; white-space:nowrap;
-  margin-right:4px;
+  opacity:0.55;
+  backdrop-filter: blur(6px);
 }
 #btn-return-kadsuite:hover {
-  background:rgba(0,212,255,0.08); border-color:#00d4ff;
+  background:rgba(0,212,255,0.08); border-color:#00d4ff; color:#00d4ff; opacity:1;
+}
+@media (max-width: 640px) {
+  #btn-return-kadsuite { left:8px; bottom:8px; font-size:7px; padding:3px 8px; }
 }
 
 
@@ -1831,10 +1843,8 @@ footer {
       <span class="unit-seg" id="unit-seg-in">in</span>
     </button>
   </div>
-  <div style="flex:1;"></div>
-  <a href="https://kadsuite.com" id="btn-return-kadsuite">← Return to KADsuite</a>
-
 </div>
+<a href="https://kadsuite.com" id="btn-return-kadsuite" target="_blank" rel="noopener">Visit KADsuite ↗</a>
 
 
 <!-- ── MODEL / KANVAS TAB BAR ── -->
